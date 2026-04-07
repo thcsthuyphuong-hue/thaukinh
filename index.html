@@ -252,7 +252,7 @@
 
 <div class="container">
     <header id="main-header">
-        <div style="font-weight: 900; letter-spacing: 1px; color: #facc15;">HỆ THỐNG TRỰC TUYẾN</div>
+        <div style="font-weight: 900; letter-spacing: 1px; color: #facc15;">HUE SMART TEST 7991 ONLINE</div>
         <div class="timer" id="timer">--:--</div>
     </header>
 
@@ -626,9 +626,9 @@ const initGame = (m) => {
     isProcessingCheat = false;
 
     currentExam = [
-        ...shuffle([...QUESTION_BANK.mcq]).slice(0, 12).map((q, i) => ({...q, id: `p1_${i}`, type: 'mcq', section: 'Phần I. Đa lựa chọn (12 câu)', displayNum: i+1})),
-        ...shuffle([...QUESTION_BANK.tf]).slice(0, 4).map((q, i) => ({...q, id: `p2_${i}`, type: 'tf', section: 'Phần II. Đúng/Sai (4 câu)', displayNum: i+1})),
-        ...shuffle([...QUESTION_BANK.short]).slice(0, 4).map((q, i) => ({...q, id: `p3_${i}`, type: 'short', section: 'Phần III. Trả lời ngắn (4 câu)', displayNum: i+1}))
+        ...shuffle([...QUESTION_BANK.mcq]).slice(0, 12).map((q, i) => ({...q, id: `p1_${i}`, type: 'mcq', section: 'Phần I. Trắc nghiệm khách quan dạng đa lựa chọn (12 câu)', displayNum: i+1})),
+        ...shuffle([...QUESTION_BANK.tf]).slice(0, 4).map((q, i) => ({...q, id: `p2_${i}`, type: 'tf', section: 'Phần II. Trắc nghiệm khách quan dạng Đúng/Sai (4 câu)', displayNum: i+1})),
+        ...shuffle([...QUESTION_BANK.short]).slice(0, 4).map((q, i) => ({...q, id: `p3_${i}`, type: 'short', section: 'Phần III. Trắc nghiệm khách quan dạng trả lời ngắn (4 câu)', displayNum: i+1}))
     ];
     userAnswers = {}; currentIdx = 0; 
     timeLeft = (mode === 'test') ? testTimeLimit : practiceTimeLimit;
@@ -696,7 +696,7 @@ function renderQuestion() {
                     <input type="text" class="char-slot" maxlength="1" value="${currentVal[2] !== ' ' ? currentVal[2] : ''}" data-idx="2">
                     <input type="text" class="char-slot" maxlength="1" value="${currentVal[3] !== ' ' ? currentVal[3] : ''}" data-idx="3">
                  </div>
-                 <p style="color:var(--danger); font-size:0.75rem; font-weight:bold; text-align:center;">Lưu ý: Nhập mỗi ký tự vào một ô</p>`;
+                 <p style="color:var(--danger); font-size:0.75rem; font-weight:bold; text-align:center;">Lưu ý: Nhập từ trái sang phải(Nếu có ít hơn 4 ký tự ký tự thì các ô sau để trống</p>`;
     }
     container.innerHTML = html + `</div>`;
     
