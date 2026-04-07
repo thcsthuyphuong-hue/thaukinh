@@ -394,6 +394,18 @@
     </div>
 </div>
 
+<div id="delete-auth-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:20001; display:none; justify-content:center; align-items:center;">
+    <div class="card" style="width:100%; max-width:400px; text-align:center; border: 4px solid var(--danger);">
+        <h2 style="color: var(--danger)">Xác nhận Xoá</h2>
+        <p style="margin-bottom: 15px; color: #475569;">Hành động này không thể hoàn tác. Vui lòng nhập mật khẩu để xoá:</p>
+        <input type="password" id="delete-pw" placeholder="Mật khẩu xoá..." style="margin-bottom:20px; outline:none; border:2px solid var(--danger);">
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-gray" style="flex:1" id="btn-delete-cancel">HỦY</button>
+            <button class="btn btn-fire" style="flex:1; background: var(--danger);" id="btn-delete-confirm">XOÁ NGAY</button>
+        </div>
+    </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
@@ -809,7 +821,35 @@ async function renderAdmin() {
     } catch(e) { listBody.innerHTML = "<tr><td colspan='10'>Lỗi kết nối Firebase.</td></tr>"; }
 }
 
-async function deleteEntry(id) { if(confirm("Xóa kết quả này?")) { await deleteDoc(doc(db, 'artifacts', appId_fixed, 'public', 'data', collectionName, id)); renderAdmin(); } }
+let currentDeleteId = null;
+function deleteEntry(id) { 
+    currentDeleteId = id; 
+    document.getElementById('delete-pw').value = ''; 
+    document.getElementById('delete-auth-modal').style.display = 'flex'; 
+}
+
+document.getElementById('btn-delete-cancel').onclick = () => { 
+    document.getElementById('delete-auth-modal').style.display = 'none'; 
+    currentDeleteId = null; 
+};
+
+document.getElementById('btn-delete-confirm').onclick = async () => { 
+    const pw = document.getElementById('delete-pw').value;
+    if (pw === "XOA123") { // <-- THẦY CÓ THỂ THAY ĐỔI MẬT KHẨU XOÁ TẠI ĐÂY
+        document.getElementById('delete-auth-modal').style.display = 'none'; 
+        if(currentDeleteId) {
+            await deleteDoc(doc(db, 'artifacts', appId_fixed, 'public', 'data', collectionName, currentDeleteId)); 
+            renderAdmin(); 
+            currentDeleteId = null;
+        }
+    } else {
+        const alertBox = document.getElementById('custom-alert');
+        const oldText = alertBox.innerHTML;
+        alertBox.innerHTML = "⚠️ SAI MẬT KHẨU XOÁ!";
+        alertBox.style.display = 'block';
+        setTimeout(() => { alertBox.style.display = 'none'; alertBox.innerHTML = oldText; }, 3000);
+    }
+};
 
 document.getElementById('btn-save-config').onclick = async () => {
     const pTime = parseInt(document.getElementById('cfg-time-practice').value);
@@ -820,7 +860,7 @@ document.getElementById('btn-save-config').onclick = async () => {
 
 document.getElementById('btn-admin-open').onclick = () => document.getElementById('admin-auth-modal').style.display = 'flex';
 document.getElementById('btn-auth-cancel').onclick = () => document.getElementById('admin-auth-modal').style.display = 'none';
-document.getElementById('btn-auth-confirm').onclick = () => { if(document.getElementById('admin-pw').value === "112233@@") { document.getElementById('admin-auth-modal').style.display='none'; showScreen('screen-admin'); renderAdmin(); } else alert("Sai mật khẩu!"); };
+document.getElementById('btn-auth-confirm').onclick = () => { if(document.getElementById('admin-pw').value === "THCSTHUYPHUONG") { document.getElementById('admin-auth-modal').style.display='none'; showScreen('screen-admin'); renderAdmin(); } else alert("Sai mật khẩu!"); };
 
 document.getElementById('btn-init-practice').onclick = () => initGame('practice');
 document.getElementById('btn-init-test').onclick = () => initGame('test');
