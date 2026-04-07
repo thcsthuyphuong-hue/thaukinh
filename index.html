@@ -860,7 +860,7 @@ document.getElementById('btn-save-config').onclick = async () => {
 
 document.getElementById('btn-admin-open').onclick = () => document.getElementById('admin-auth-modal').style.display = 'flex';
 document.getElementById('btn-auth-cancel').onclick = () => document.getElementById('admin-auth-modal').style.display = 'none';
-document.getElementById('btn-auth-confirm').onclick = () => { if(document.getElementById('admin-pw').value === "THCSTHUYPHUONG") { document.getElementById('admin-auth-modal').style.display='none'; showScreen('screen-admin'); renderAdmin(); } else alert("Sai mật khẩu!"); };
+document.getElementById('btn-auth-confirm').onclick = () => { if(document.getElementById('admin-pw').value === "112233@@") { document.getElementById('admin-auth-modal').style.display='none'; showScreen('screen-admin'); renderAdmin(); } else alert("Sai mật khẩu!"); };
 
 document.getElementById('btn-init-practice').onclick = () => initGame('practice');
 document.getElementById('btn-init-test').onclick = () => initGame('test');
