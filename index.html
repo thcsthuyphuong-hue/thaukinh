@@ -1,4 +1,4 @@
-<!-- MÃ NGUỒN ỔN ĐỊNH NHẤT - CẬP NHẬT CHUYÊN ĐỀ THẤU KÍNH & FIREBASE MỚI -->
+<!-- MÃ NGUỒN ỔN ĐỊNH NHẤT - FULL 100% -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -252,7 +252,7 @@
 
 <div class="container">
     <header id="main-header">
-        <div style="font-weight: 900; letter-spacing: 1px; color: #facc15;">HUE SMART TEST 7991 ONLINE</div>
+        <div style="font-weight: 900; letter-spacing: 1px; color: #facc15;">HUE SMART TEST 7991</div>
         <div class="timer" id="timer">--:--</div>
     </header>
 
@@ -383,6 +383,7 @@
     </footer>
 </div>
 
+<!-- Modal Đăng nhập Admin -->
 <div id="admin-auth-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:20000; display:none; justify-content:center; align-items:center;">
     <div class="card" style="width:100%; max-width:400px; text-align:center;">
         <h2 style="color: var(--primary)">Xác minh Quản trị</h2>
@@ -394,14 +395,15 @@
     </div>
 </div>
 
+<!-- Modal Xác nhận Hành động (Xoá/Lưu cấu hình) -->
 <div id="delete-auth-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:20001; display:none; justify-content:center; align-items:center;">
     <div class="card" style="width:100%; max-width:400px; text-align:center; border: 4px solid var(--danger);">
-        <h2 style="color: var(--danger)">Xác nhận Xoá</h2>
-        <p style="margin-bottom: 15px; color: #475569;">Hành động này không thể hoàn tác. Vui lòng nhập mật khẩu để xoá:</p>
-        <input type="password" id="delete-pw" placeholder="Mật khẩu xoá..." style="margin-bottom:20px; outline:none; border:2px solid var(--danger);">
+        <h2 id="auth-action-title" style="color: var(--danger)">Xác nhận Hành động</h2>
+        <p style="margin-bottom: 15px; color: #475569;">Vui lòng nhập mật khẩu cấp cao để tiếp tục:</p>
+        <input type="password" id="delete-pw" placeholder="Mật khẩu..." style="margin-bottom:20px; outline:none; border:2px solid var(--danger);">
         <div style="display:flex; gap:10px;">
             <button class="btn btn-gray" style="flex:1" id="btn-delete-cancel">HỦY</button>
-            <button class="btn btn-fire" style="flex:1; background: var(--danger);" id="btn-delete-confirm">XOÁ NGAY</button>
+            <button class="btn btn-fire" style="flex:1; background: var(--danger);" id="btn-delete-confirm">XÁC NHẬN</button>
         </div>
     </div>
 </div>
@@ -412,19 +414,19 @@ import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gsta
 import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD9lyDnPqYCSHx2WKUPbPBgVrQT-IzloQU",
-    authDomain: "test-fef79.firebaseapp.com",
-    projectId: "test-fef79",
-    storageBucket: "test-fef79.firebasestorage.app",
-    messagingSenderId: "238727028560",
-    appId: "1:238727028560:web:44a464e1fec691ff099655",
-    measurementId: "G-ZCR523T664"
+    apiKey: "AIzaSyDg4Q6rsrvPhY31oCpL4DAAjTKlgjJN1c0",
+    authDomain: "khtn9-5c1f4.firebaseapp.com",
+    projectId: "khtn9-5c1f4",
+    storageBucket: "khtn9-5c1f4.firebasestorage.app",
+    messagingSenderId: "498407772914",
+    appId: "1:498407772914:web:8ec0ed711675a96a42366b",
+    measurementId: "G-GPZSP2DR92"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const appId_fixed = 'khtn9-thau-kinh-v1';
+const appId_fixed = 'khtn9-thau-kinh-v2';
 const collectionName = 'quiz_results'; 
 
 let currentUser = null, quizStartTime = 0, isQuizRunning = false, mode = '', currentIdx = 0, userAnswers = {}, timeLeft = 0, timerInt, currentExam = [];
@@ -435,10 +437,10 @@ const audioFinish = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing
 let practiceTimeLimit = 2700;
 let testTimeLimit = 2700;
 
-// CỜ CHỐNG GIAN LẬN
+// CỜ CHỐNG GIAN LẬN - SỬA LỖI
 let canCheckCheat = false; 
 let isProcessingCheat = false;
-let wishTimeoutId = null; 
+let wishTimeoutId = null; // Quản lý timer của màn hình "CỐ LÊN"
 
 document.addEventListener('copy', (e) => { e.preventDefault(); return false; });
 document.addEventListener('keydown', (e) => {
@@ -453,32 +455,33 @@ onAuthStateChanged(auth, async user => {
     if(user) loadTimeConfig();
 });
 
+// NGÂN HÀNG 40 CÂU HỎI BÀI 8: THẤU KÍNH
 const QUESTION_BANK = {
     mcq: [
-        { q: "Thấu kính phân kì là loại thấu kính có", a: "phần rìa dày hơn phần giữa.", o: ["phần rìa mỏng hơn phần giữa.", "phần rìa dày hơn phần giữa.", "phần rìa và phần giữa dày bằng nhau.", "hai mặt đều là mặt phẳng."], e: "Tại sao phương án này ĐÚNG: Theo đặc điểm hình học, thấu kính phân kì (thấu kính rìa dày) có phần rìa dày hơn phần giữa. Tại sao các phương án còn lại SAI: A là đặc điểm của thấu kính hội tụ; C và D không phải là hình dạng của thấu kính phân kì." },
-        { q: "Trong các loại thấu kính có tiết diện ngang sau đây, thấu kính nào là thấu kính phân kì?", a: "Thấu kính có hai mặt cầu lõm.", o: ["Thấu kính có hai mặt cầu lồi.", "Thấu kính có một mặt phẳng, một mặt cầu lồi.", "Thấu kính có hai mặt cầu lõm.", "Thấu kính có một mặt lõm, một mặt lồi và rìa mỏng."], e: "Tại sao phương án này ĐÚNG: Thấu kính có hai mặt cầu lõm sẽ làm cho phần rìa dày hơn phần giữa, đó là thấu kính phân kì. Tại sao các phương án còn lại SAI: A, B, D đều tạo ra phần giữa dày hơn phần rìa, thuộc loại thấu kính hội tụ." },
-        { q: "Chiếu một chùm tia tới song song với trục chính của một thấu kính phân kì, chùm tia ló sẽ", a: "phân kì, có đường kéo dài đi qua tiêu điểm vật.", o: ["hội tụ tại một điểm trên trục chính.", "phân kì, có đường kéo dài đi qua tiêu điểm vật.", "truyền thẳng như phương của tia tới.", "bị phản xạ toàn phần tại mặt thấu kính."], e: "Tại sao phương án này ĐÚNG: Đây là đặc điểm quang học đặc trưng của thấu kính phân kì đối với chùm tia tới song song trục chính. Tại sao các phương án còn lại SAI: A là đặc điểm thấu kính hội tụ; C sai quy luật khúc xạ; D không phải hiện tượng chính của thấu kính." },
-        { q: "Vật sáng đặt trước thấu kính phân kì luôn cho ảnh có đặc điểm là", a: "ảnh ảo, cùng chiều và nhỏ hơn vật.", o: ["ảnh ảo, cùng chiều và nhỏ hơn vật.", "ảnh ảo, ngược chiều và nhỏ hơn vật.", "ảnh thật, cùng chiều và lớn hơn vật.", "ảnh thật, ngược chiều và nhỏ hơn vật."], e: "Tại sao phương án này ĐÚNG: Thấu kính phân kì luôn cho ảnh ảo, cùng chiều và nhỏ hơn vật với mọi vị trí của vật sáng đặt trước nó. Tại sao các phương án còn lại SAI: Các phương án này mô tả sai tính chất, chiều hoặc độ lớn của ảnh tạo bởi thấu kính phân kì." },
-        { q: "Khi đưa một vật sáng lại rất gần thấu kính phân kì, ảnh ảo của vật sẽ", a: "vẫn luôn nhỏ hơn vật.", o: ["lớn hơn vật.", "vẫn luôn nhỏ hơn vật.", "biến thành ảnh thật.", "nằm ở xa vô cực."], e: "Tại sao phương án này ĐÚNG: Đặc điểm ảnh ảo của vật thật qua thấu kính phân kì là luôn luôn nhỏ hơn vật, dù vật đặt ở bất kì vị trí nào. Tại sao các phương án còn lại SAI: Ảnh qua thấu kính phân kì không bao giờ lớn hơn vật hay trở thành ảnh thật (với vật thật)." },
-        { q: "Vị trí của ảnh tạo bởi thấu kính phân kì đối với vật sáng luôn", a: "nằm trong khoảng tiêu cự của thấu kính.", o: ["nằm trong khoảng tiêu cự của thấu kính.", "nằm ngoài khoảng tiêu cự của thấu kính.", "trùng với tiêu điểm ảnh của thấu kính.", "nằm ở vô cùng."], e: "Tại sao phương án này ĐÚNG: Với vật sáng đặt trước thấu kính phân kì, ảnh ảo luôn nằm trong khoảng từ quang tâm đến tiêu điểm ảnh $F'$. Tại sao các phương án còn lại SAI: Sai quy luật tạo ảnh của thấu kính phân kì." },
-        { q: "Kí hiệu của thấu kính phân kì trong vẽ sơ đồ quang học là", a: "đoạn thẳng có hai đầu mũi tên hướng vào trong.", o: ["đoạn thẳng có hai đầu mũi tên hướng ra ngoài.", "đoạn thẳng có hai đầu mũi tên hướng vào trong.", "đoạn thẳng không có mũi tên.", "đường tròn có tâm là quang tâm $O$."], e: "Tại sao phương án này ĐÚNG: Đây là quy ước vẽ kí hiệu thấu kính phân kì (rìa dày). Tại sao các phương án còn lại SAI: A là kí hiệu thấu kính hội tụ; C, D không phải kí hiệu thấu kính." },
-        { q: "Thấu kính hội tụ có thể được coi là gồm nhiều lăng kính nhỏ ghép lại sao cho", a: "đáy của các lăng kính hướng về phía trục chính.", o: ["đáy của các lăng kính hướng về phía trục chính.", "đáy của các lăng kính hướng ra xa trục chính.", "đỉnh của các lăng kính hướng về phía trục chính.", "các lăng kính đặt song song với trục chính."], e: "Tại sao phương án này ĐÚNG: Theo nguyên lí khúc xạ qua lăng kính, tia sáng luôn lệch về phía đáy. Để chùm sáng hội tụ về trục chính, đáy các lăng kính phải hướng về trục chính. Tại sao các phương án còn lại SAI: B là cấu tạo tương đương của thấu kính phân kì; C, D sai nguyên lí bẻ hướng tia sáng." },
-        { q: "Khi coi thấu kính phân kì là tập hợp các lăng kính nhỏ, chùm tia ló bị phân kì ra xa trục chính vì", a: "đáy các lăng kính nhỏ hướng ra xa trục chính.", o: ["đáy các lăng kính nhỏ hướng về trục chính.", "đáy các lăng kính nhỏ hướng ra xa trục chính.", "chiết suất các lăng kính nhỏ bằng chiết suất không khí.", "lăng kính nhỏ làm tăng tốc độ ánh sáng."], e: "Tại sao phương án này ĐÚNG: Tia sáng lệch về phía đáy lăng kính. Khi đáy hướng ra ngoài, tia ló sẽ bị bẻ xa trục chính tạo hiện tượng phân kì. Tại sao các phương án còn lại SAI: A tạo hiện tượng hội tụ; C, D sai kiến thức quang lí." },
-        { q: "Tia tới đi qua quang tâm $O$ của thấu kính hội tụ cho tia ló", a: "tiếp tục truyền thẳng theo phương của tia tới.", o: ["đi qua tiêu điểm ảnh $F'$.", "song song với trục chính.", "tiếp tục truyền thẳng theo phương của tia tới.", "quay ngược trở lại môi trường cũ."], e: "Tại sao phương án này ĐÚNG: Mọi tia sáng đi qua quang tâm của thấu kính (hội tụ hay phân kì) đều truyền thẳng. Tại sao các phương án còn lại SAI: Các mô tả này dành cho tia song song hoặc tia đi qua tiêu điểm vật." },
-        { q: "Tia tới song song với trục chính của thấu kính hội tụ cho tia ló", a: "đi qua tiêu điểm ảnh $F'$.", o: ["đi qua tiêu điểm ảnh $F'$.", "đi qua tiêu điểm vật $F$.", "truyền thẳng qua quang tâm $O$.", "song song với trục phụ."], e: "Tại sao phương án này ĐÚNG: Đây là quy luật của một trong ba tia sáng đặc biệt qua thấu kính hội tụ. Tại sao các phương án còn lại SAI: Sai quy luật đường truyền tia sáng đặc biệt." },
-        { q: "Tia tới đi qua tiêu điểm vật $F$ của thấu kính hội tụ cho tia ló", a: "song song với trục chính.", o: ["truyền thẳng qua quang tâm.", "đi qua tiêu điểm ảnh $F'$.", "song song với trục chính.", "ngược chiều với tia tới."], e: "Tại sao phương án này ĐÚNG: Đây là tính chất thuận nghịch của đường truyền ánh sáng ứng với tia đi qua tiêu điểm. Tại sao các phương án còn lại SAI: Các phương án này mô tả sai đường truyền tia ló." },
-        { q: "Tại sao ảnh của vật thật qua thấu kính phân kì KHÔNG bao giờ hứng được trên màn?", a: "Vì đó là ảnh ảo được tạo bởi đường kéo dài của chùm tia ló.", o: ["Vì đó là ảnh ảo được tạo bởi đường kéo dài của chùm tia ló.", "Vì đó là ảnh thật nhưng nằm quá gần thấu kính.", "Vì chùm tia ló là chùm hội tụ.", "Vì thấu kính phân kì hấp thụ toàn bộ ánh sáng."], e: "Tại sao phương án này ĐÚNG: Thấu kính phân kì làm phân kì chùm tia ló, các tia ló không thể cắt nhau thật sự mà chỉ có đường kéo dài cắt nhau, tạo nên ảnh ảo. Tại sao các phương án còn lại SAI: Thấu kính phân kì cho ảnh ảo; chùm tia ló phân kì; thấu kính trong suốt không hấp thụ toàn bộ ánh sáng." },
-        { q: "Ảnh tạo bởi thấu kính phân kì luôn nhỏ hơn vật vì", a: "giao điểm của các đường kéo dài chùm tia ló luôn nằm gần quang tâm hơn vật.", o: ["thấu kính làm tăng khoảng cách giữa các tia sáng.", "giao điểm của các đường kéo dài chùm tia ló luôn nằm gần quang tâm hơn vật.", "vật luôn nằm ngoài khoảng tiêu cự.", "chiết suất của thấu kính phân kì rất nhỏ."], e: "Tại sao phương án này ĐÚNG: Dựa trên sơ đồ hình học, tia qua quang tâm truyền thẳng và đường kéo dài của tia ló từ tia song song trục chính luôn cắt nhau tại một điểm thấp hơn vật và gần quang tâm hơn. Tại sao các phương án còn lại SAI: Không giải thích đúng bản chất hình học tạo ảnh." },
-        { q: "Khi làm thí nghiệm với thấu kính hội tụ, nếu chiếu một tia sáng hẹp trùng với trục chính thì tia ló sẽ", a: "truyền thẳng theo trục chính.", o: ["lệch về phía trên trục chính.", "lệch về phía dưới trục chính.", "truyền thẳng theo trục chính.", "bị phản xạ toàn phần."], e: "Tại sao phương án này ĐÚNG: Trục chính đi qua quang tâm $O$, mọi tia sáng qua $O$ đều truyền thẳng. Tại sao các phương án còn lại SAI: Tia sáng đi dọc trục chính không bị khúc xạ lệch phương." },
-        { q: "Trong thí nghiệm xác định đường truyền tia sáng qua thấu kính phân kì, tia tới song song trục chính cho tia ló có đường kéo dài đi qua điểm nào?", a: "Tiêu điểm ảnh $F'$ ở phía trước thấu kính.", o: ["Quang tâm $O$.", "Tiêu điểm vật $F$ ở phía trước thấu kính.", "Tiêu điểm ảnh $F'$ ở phía trước thấu kính.", "Một điểm bất kì trên trục chính."], e: "Tại sao phương án này ĐÚNG: Theo quy ước với thấu kính phân kì, tiêu điểm ảnh $F'$ nằm ở phía trước thấu kính (phía tia tới). Tại sao các phương án còn lại SAI: Sai vị trí tiêu điểm theo quy luật quang học thấu kính phân kì." },
-        { q: "Để kiểm tra xem ảnh tạo bởi thấu kính hội tụ là thật hay ảo, ta sử dụng dụng cụ nào?", a: "Màn chắn.", o: ["Thước dây.", "Gương phẳng.", "Màn chắn.", "Kính hiển vi."], e: "Tại sao phương án này ĐÚNG: Màn chắn dùng để hứng ảnh, nếu hứng được trên màn thì đó là ảnh thật. Tại sao các phương án còn lại SAI: Các dụng cụ này không dùng để xác định tính chất thực/ảo của ảnh." },
-        { q: "Khi vật đặt trong khoảng tiêu cự của thấu kính hội tụ, ta KHÔNG thấy ảnh hiện trên màn chắn đặt sau thấu kính vì", a: "ảnh được tạo ra là ảnh ảo.", o: ["ảnh được tạo ra là ảnh ảo.", "ảnh nằm ở quá xa màn chắn.", "thấu kính bị bẩn không cho ánh sáng qua.", "màn chắn đặt chưa đúng vị trí."], e: "Tại sao phương án này ĐÚNG: Trong khoảng tiêu cự, thấu kính hội tụ cho ảnh ảo, mà ảnh ảo thì không hứng được trên màn. Tại sao các phương án còn lại SAI: Không phải nguyên nhân khiến ảnh không hiện trên màn trong trường hợp này." },
-        { q: "Để vẽ ảnh $A'B'$ của vật sáng $AB$ vuông góc với trục chính qua thấu kính, ta thường sử dụng mấy tia sáng đặc biệt xuất phát từ điểm $B$?", a: "2 tia.", o: ["1 tia.", "2 tia.", "4 tia.", "5 tia."], e: "Tại sao phương án này ĐÚNG: Giao điểm của ít nhất 2 tia ló (hoặc đường kéo dài của chúng) sẽ xác định được vị trí ảnh $B'$. Tại sao các phương án còn lại SAI: 1 tia không xác định được giao điểm; nhiều hơn 2 tia là không cần thiết." },
-        { q: "Khi vẽ ảnh của một vật qua thấu kính hội tụ cho ảnh ảo, các tia ló sau thấu kính có đặc điểm là", a: "loe rộng ra (chùm phân kì).", o: ["loe rộng ra (chùm phân kì).", "tụ lại tại một điểm (chùm hội tụ).", "song song với nhau.", "quay ngược lại gặp nhau tại vật."], e: "Tại sao phương án này ĐÚNG: Khi tạo ảnh ảo, chùm tia ló là chùm phân kì nên đường kéo dài của chúng mới cắt nhau ở phía trước thấu kính. Tại sao các phương án còn lại SAI: Chùm hội tụ tạo ảnh thật; chùm song song không tạo ảnh hữu hạn." },
-        { q: "Trong sơ đồ vẽ ảnh qua thấu kính hội tụ, nếu vật $AB$ đặt tại vị trí cách quang tâm một khoảng $d = 2f$, ảnh $A'B'$ sẽ có độ cao", a: "bằng vật.", o: ["gấp đôi vật.", "bằng một nửa vật.", "bằng vật.", "gấp bốn lần vật."], e: "Tại sao phương án này ĐÚNG: Khi $d = 2f$, sơ đồ hình học cho thấy ảnh thật $A'B'$ cách thấu kính $d' = 2f$ và có độ cao bằng vật ($h' = h$). Tại sao các phương án còn lại SAI: Sai quy luật tỉ lệ hình học qua thấu kính." },
-        { q: "Chiếu một chùm tia tới hội tụ tại tiêu điểm vật $F$ của thấu kính hội tụ thì chùm tia ló sẽ", a: "song song với trục chính.", o: ["song song với trục chính.", "hội tụ tại tiêu điểm ảnh $F'$.", "truyền thẳng không đổi hướng.", "phân kì ra xa trục chính."], e: "Tại sao phương án này ĐÚNG: Đây là tính chất của tia sáng đặc biệt đi qua tiêu điểm vật $F$. Tại sao các phương án còn lại SAI: Mô tả sai quy luật tia ló." },
-        { q: "Thấu kính phân kì thường được làm bằng vật liệu", a: "trong suốt như thủy tinh hoặc nhựa.", o: ["trong suốt như thủy tinh hoặc nhựa.", "đục không cho ánh sáng đi qua.", "kim loại có bề mặt sáng bóng.", "gỗ được đánh bóng."], e: "Tại sao phương án này ĐÚNG: Thấu kính phải được làm từ vật liệu trong suốt để xảy ra hiện tượng khúc xạ ánh sáng. Tại sao các phương án còn lại SAI: Vật liệu đục hay kim loại sẽ phản xạ hoặc hấp thụ ánh sáng, không tạo thành thấu kính." },
-        { q: "Ảnh ảo của một vật tạo bởi thấu kính phân kì có vị trí", a: "luôn nằm gần thấu kính hơn vật.", o: ["luôn nằm xa thấu kính hơn vật.", "luôn nằm gần thấu kính hơn vật.", "luôn nằm cùng vị trí với vật.", "luôn nằm ở phía bên kia của thấu kính so với vật."], e: "Tại sao phương án này ĐÚNG: Theo sơ đồ tạo ảnh của thấu kính phân kì, ảnh ảo luôn nằm trong khoảng tiêu cự và gần quang tâm hơn vật. Tại sao các phương án còn lại SAI: Sai tính chất vị trí ảnh của thấu kính phân kì." }
+        { q: "Thấu kính phân kì là loại thấu kính có", a: "phần rìa dày hơn phần giữa.", o: ["phần rìa mỏng hơn phần giữa.", "phần rìa dày hơn phần giữa.", "phần rìa và phần giữa dày bằng nhau.", "hai mặt đều là mặt phẳng."], e: "Theo đặc điểm hình học, thấu kính phân kì (thấu kính rìa dày) có phần rìa dày hơn phần giữa." },
+        { q: "Trong các loại thấu kính có tiết diện ngang sau đây, thấu kính nào là thấu kính phân kì?", a: "Thấu kính có hai mặt cầu lõm.", o: ["Thấu kính có hai mặt cầu lồi.", "Thấu kính có một mặt phẳng, một mặt cầu lồi.", "Thấu kính có hai mặt cầu lõm.", "Thấu kính có một mặt lõm, một mặt lồi và rìa mỏng."], e: "Thấu kính có hai mặt cầu lõm sẽ làm cho phần rìa dày hơn phần giữa, đó là thấu kính phân kì." },
+        { q: "Chiếu một chùm tia tới song song với trục chính của một thấu kính phân kì, chùm tia ló sẽ", a: "phân kì, có đường kéo dài đi qua tiêu điểm vật.", o: ["hội tụ tại một điểm trên trục chính.", "phân kì, có đường kéo dài đi qua tiêu điểm vật.", "truyền thẳng như phương của tia tới.", "bị phản xạ toàn phần tại mặt thấu kính."], e: "Đây là đặc điểm quang học đặc trưng của thấu kính phân kì đối với chùm tia tới song song trục chính." },
+        { q: "Vật sáng đặt trước thấu kính phân kì luôn cho ảnh có đặc điểm là", a: "ảnh ảo, cùng chiều và nhỏ hơn vật.", o: ["ảnh ảo, cùng chiều và nhỏ hơn vật.", "ảnh ảo, ngược chiều và nhỏ hơn vật.", "ảnh thật, cùng chiều và lớn hơn vật.", "ảnh thật, ngược chiều và nhỏ hơn vật."], e: "Thấu kính phân kì luôn cho ảnh ảo, cùng chiều và nhỏ hơn vật với mọi vị trí của vật sáng đặt trước nó." },
+        { q: "Khi đưa một vật sáng lại rất gần thấu kính phân kì, ảnh ảo của vật sẽ", a: "vẫn luôn nhỏ hơn vật.", o: ["lớn hơn vật.", "vẫn luôn nhỏ hơn vật.", "biến thành ảnh thật.", "nằm ở xa vô cực."], e: "Đặc điểm ảnh ảo của vật thật qua thấu kính phân kì là luôn luôn nhỏ hơn vật, dù vật đặt ở bất kì vị trí nào." },
+        { q: "Vị trí của ảnh tạo bởi thấu kính phân kì đối với vật sáng luôn", a: "nằm trong khoảng tiêu cự của thấu kính.", o: ["nằm trong khoảng tiêu cự của thấu kính.", "nằm ngoài khoảng tiêu cự của thấu kính.", "trùng với tiêu điểm ảnh của thấu kính.", "nằm ở vô cùng."], e: "Với vật sáng đặt trước thấu kính phân kì, ảnh ảo luôn nằm trong khoảng từ quang tâm đến tiêu điểm ảnh $F'$." },
+        { q: "Kí hiệu của thấu kính phân kì trong vẽ sơ đồ quang học là", a: "đoạn thẳng có hai đầu mũi tên hướng vào trong.", o: ["đoạn thẳng có hai đầu mũi tên hướng ra ngoài.", "đoạn thẳng có hai đầu mũi tên hướng vào trong.", "đoạn thẳng không có mũi tên.", "đường tròn có tâm là quang tâm $O$."], e: "Đoạn thẳng có hai đầu mũi tên hướng vào trong là quy ước vẽ kí hiệu thấu kính phân kì (rìa dày)." },
+        { q: "Thấu kính hội tụ có thể được coi là gồm nhiều lăng kính nhỏ ghép lại sao cho", a: "đáy của các lăng kính hướng về phía trục chính.", o: ["đáy của các lăng kính hướng về phía trục chính.", "đáy của các lăng kính hướng ra xa trục chính.", "đỉnh của các lăng kính hướng về phía trục chính.", "các lăng kính đặt song song với trục chính."], e: "Theo nguyên lí khúc xạ qua lăng kính, tia sáng luôn lệch về phía đáy. Để chùm sáng hội tụ về trục chính, đáy các lăng kính phải hướng về trục chính." },
+        { q: "Khi coi thấu kính phân kì là tập hợp các lăng kính nhỏ, chùm tia ló bị phân kì ra xa trục chính vì", a: "đáy các lăng kính nhỏ hướng ra xa trục chính.", o: ["đáy các lăng kính nhỏ hướng về trục chính.", "đáy các lăng kính nhỏ hướng ra xa trục chính.", "chiết suất các lăng kính nhỏ bằng chiết suất không khí.", "lăng kính nhỏ làm tăng tốc độ ánh sáng."], e: "Tia sáng lệch về phía đáy lăng kính. Khi đáy hướng ra ngoài, tia ló sẽ bị bẻ xa trục chính tạo hiện tượng phân kì." },
+        { q: "Tia tới đi qua quang tâm $O$ của thấu kính hội tụ cho tia ló", a: "tiếp tục truyền thẳng theo phương của tia tới.", o: ["đi qua tiêu điểm ảnh $F'$.", "song song với trục chính.", "tiếp tục truyền thẳng theo phương của tia tới.", "quay ngược trở lại môi trường cũ."], e: "Mọi tia sáng đi qua quang tâm của thấu kính (hội tụ hay phân kì) đều truyền thẳng." },
+        { q: "Tia tới song song với trục chính của thấu kính hội tụ cho tia ló", a: "đi qua tiêu điểm ảnh $F'$.", o: ["đi qua tiêu điểm ảnh $F'$.", "đi qua tiêu điểm vật $F$.", "truyền thẳng qua quang tâm $O$.", "song song với trục phụ."], e: "Đây là quy luật của một trong ba tia sáng đặc biệt qua thấu kính hội tụ." },
+        { q: "Tia tới đi qua tiêu điểm vật $F$ của thấu kính hội tụ cho tia ló", a: "song song với trục chính.", o: ["truyền thẳng qua quang tâm.", "đi qua tiêu điểm ảnh $F'$.", "song song với trục chính.", "ngược chiều với tia tới."], e: "Đây là tính chất thuận nghịch của đường truyền ánh sáng ứng với tia đi qua tiêu điểm." },
+        { q: "Tại sao ảnh của vật thật qua thấu kính phân kì KHÔNG bao giờ hứng được trên màn?", a: "Vì đó là ảnh ảo được tạo bởi đường kéo dài của chùm tia ló.", o: ["Vì đó là ảnh ảo được tạo bởi đường kéo dài của chùm tia ló.", "Vì đó là ảnh thật nhưng nằm quá gần thấu kính.", "Vì chùm tia ló là chùm hội tụ.", "Vì thấu kính phân kì hấp thụ toàn bộ ánh sáng."], e: "Thấu kính phân kì làm phân kì chùm tia ló, các tia ló không thể cắt nhau thật sự mà chỉ có đường kéo dài cắt nhau, tạo nên ảnh ảo." },
+        { q: "Ảnh tạo bởi thấu kính phân kì luôn nhỏ hơn vật vì", a: "giao điểm của các đường kéo dài chùm tia ló luôn nằm gần quang tâm hơn vật.", o: ["thấu kính làm tăng khoảng cách giữa các tia sáng.", "giao điểm của các đường kéo dài chùm tia ló luôn nằm gần quang tâm hơn vật.", "vật luôn nằm ngoài khoảng tiêu cự.", "chiết suất của thấu kính phân kì rất nhỏ."], e: "Dựa trên sơ đồ hình học, tia qua quang tâm truyền thẳng và đường kéo dài của tia ló từ tia song song trục chính luôn cắt nhau tại một điểm thấp hơn vật và gần quang tâm hơn." },
+        { q: "Khi làm thí nghiệm với thấu kính hội tụ, nếu chiếu một tia sáng hẹp trùng với trục chính thì tia ló sẽ", a: "truyền thẳng theo trục chính.", o: ["lệch về phía trên trục chính.", "lệch về phía dưới trục chính.", "truyền thẳng theo trục chính.", "bị phản xạ toàn phần."], e: "Trục chính đi qua quang tâm $O$, mọi tia sáng qua $O$ đều truyền thẳng." },
+        { q: "Trong thí nghiệm xác định đường truyền tia sáng qua thấu kính phân kì, tia tới song song trục chính cho tia ló có đường kéo dài đi qua điểm nào?", a: "Tiêu điểm ảnh $F'$ ở phía trước thấu kính.", o: ["Quang tâm $O$.", "Tiêu điểm vật $F$ ở phía trước thấu kính.", "Tiêu điểm ảnh $F'$ ở phía trước thấu kính.", "Một điểm bất kì trên trục chính."], e: "Theo quy ước với thấu kính phân kì, tiêu điểm ảnh $F'$ nằm ở phía trước thấu kính (phía tia tới)." },
+        { q: "Để kiểm tra xem ảnh tạo bởi thấu kính hội tụ là thật hay ảo, ta sử dụng dụng cụ nào?", a: "Màn chắn.", o: ["Thước dây.", "Gương phẳng.", "Màn chắn.", "Kính hiển vi."], e: "Màn chắn dùng để hứng ảnh, nếu hứng được trên màn thì đó là ảnh thật." },
+        { q: "Khi vật đặt trong khoảng tiêu cự của thấu kính hội tụ, ta KHÔNG thấy ảnh hiện trên màn chắn đặt sau thấu kính vì", a: "ảnh được tạo ra là ảnh ảo.", o: ["ảnh được tạo ra là ảnh ảo.", "ảnh nằm ở quá xa màn chắn.", "thấu kính bị bẩn không cho ánh sáng qua.", "màn chắn đặt chưa đúng vị trí."], e: "Trong khoảng tiêu cự, thấu kính hội tụ cho ảnh ảo, mà ảnh ảo thì không hứng được trên màn." },
+        { q: "Để vẽ ảnh $A'B'$ của vật sáng $AB$ vuông góc với trục chính qua thấu kính, ta thường sử dụng mấy tia sáng đặc biệt xuất phát từ điểm $B$?", a: "2 tia.", o: ["1 tia.", "2 tia.", "4 tia.", "5 tia."], e: "Giao điểm của ít nhất 2 tia ló (hoặc đường kéo dài của chúng) sẽ xác định được vị trí ảnh $B'$." },
+        { q: "Khi vẽ ảnh của một vật qua thấu kính hội tụ cho ảnh ảo, các tia ló sau thấu kính có đặc điểm là", a: "loe rộng ra (chùm phân kì).", o: ["loe rộng ra (chùm phân kì).", "tụ lại tại một điểm (chùm hội tụ).", "song song với nhau.", "quay ngược lại gặp nhau tại vật."], e: "Khi tạo ảnh ảo, chùm tia ló là chùm phân kì nên đường kéo dài của chúng mới cắt nhau ở phía trước thấu kính." },
+        { q: "Trong sơ đồ vẽ ảnh qua thấu kính hội tụ, nếu vật $AB$ đặt tại vị trí cách quang tâm một khoảng $d = 2f$, ảnh $A'B'$ sẽ có độ cao", a: "bằng vật.", o: ["gấp đôi vật.", "bằng một nửa vật.", "bằng vật.", "gấp bốn lần vật."], e: "Khi $d = 2f$, sơ đồ hình học cho thấy ảnh thật $A'B'$ cách thấu kính $d' = 2f$ và có độ cao bằng vật ($h' = h$)." },
+        { q: "Chiếu một chùm tia tới hội tụ tại tiêu điểm vật $F$ của thấu kính hội tụ thì chùm tia ló sẽ", a: "song song với trục chính.", o: ["song song với trục chính.", "hội tụ tại tiêu điểm ảnh $F'$.", "truyền thẳng không đổi hướng.", "phân kì ra xa trục chính."], e: "Đây là tính chất của tia sáng đặc biệt đi qua tiêu điểm vật $F$." },
+        { q: "Thấu kính phân kì thường được làm bằng vật liệu", a: "trong suốt như thủy tinh hoặc nhựa.", o: ["trong suốt như thủy tinh hoặc nhựa.", "đục không cho ánh sáng đi qua.", "kim loại có bề mặt sáng bóng.", "gỗ được đánh bóng."], e: "Thấu kính phải được làm từ vật liệu trong suốt để xảy ra hiện tượng khúc xạ ánh sáng." },
+        { q: "Ảnh ảo của một vật tạo bởi thấu kính phân kì có vị trí", a: "luôn nằm gần thấu kính hơn vật.", o: ["luôn nằm xa thấu kính hơn vật.", "luôn nằm gần thấu kính hơn vật.", "luôn nằm cùng vị trí với vật.", "luôn nằm ở phía bên kia của thấu kính so với vật."], e: "Theo sơ đồ tạo ảnh của thấu kính phân kì, ảnh ảo luôn nằm trong khoảng tiêu cự và gần quang tâm hơn vật." }
     ],
     tf: [
         { ctx: "Xét các đặc điểm cấu tạo và nguyên lí của thấu kính:", sts: [ 
@@ -486,59 +489,59 @@ const QUESTION_BANK = {
             { l: "b)", t: "Có thể coi thấu kính là tập hợp của nhiều lăng kính nhỏ ghép lại với nhau.", a: true }, 
             { l: "c)", t: "Khi chùm tia tới đi qua lăng kính nhỏ, tia ló luôn bị lệch về phía đỉnh của lăng kính đó.", a: false }, 
             { l: "d)", t: "Thấu kính hội tụ có đáy các lăng kính nhỏ hướng ra xa trục chính.", a: false } 
-        ], e: "Ý a ĐÚNG vì đây là đặc điểm hình học nhận biết thấu kính phân kì. Ý b ĐÚNG đây là mô hình giải thích nguyên lí hoạt động dựa trên sự khúc xạ. Ý c sai vì theo định luật khúc xạ, tia sáng khi qua lăng kính luôn lệch về phía đáy. Ý d sai vì thấu kính hội tụ có đáy các lăng kính hướng về trục chính mới làm chùm sáng hội tụ." },
+        ], e: "Ý a đúng (đặc điểm hình học TKPK). Ý b đúng (mô hình giải thích nguyên lí). Ý c sai vì tia sáng khi qua lăng kính luôn lệch về phía đáy. Ý d sai vì thấu kính hội tụ có đáy hướng về trục chính." },
         { ctx: "Trong thí nghiệm khảo sát đường truyền các tia sáng qua thấu kính hội tụ:", sts: [ 
             { l: "a)", t: "Tia sáng đi qua quang tâm $O$ luôn truyền thẳng.", a: true }, 
             { l: "b)", t: "Tia tới song song với trục chính cho tia ló đi qua tiêu điểm ảnh $F'$.", a: true }, 
             { l: "c)", t: "Tia tới đi qua tiêu điểm ảnh $F'$ cho tia ló song song với trục chính.", a: false }, 
             { l: "d)", t: "Mọi tia sáng chiếu tới thấu kính hội tụ đều cho tia ló song song với nhau.", a: false } 
-        ], e: "Ý a ĐÚNG đây là tính chất chung của mọi quang tâm thấu kính mỏng. Ý b ĐÚNG là một trong ba tia sáng đặc biệt dùng để vẽ ảnh. Ý c sai vì tia tới phải đi qua tiêu điểm vật $F$ (không phải $F'$) mới cho tia ló song song trục chính. Ý d sai vì hướng tia ló phụ thuộc vào hướng và vị trí tia tới." },
+        ], e: "Ý c sai vì tia tới phải đi qua tiêu điểm vật $F$ mới cho tia ló song song trục chính. Ý d sai vì hướng tia ló phụ thuộc vào hướng tia tới." },
         { ctx: "Về tính chất ảnh tạo bởi thấu kính phân kì:", sts: [ 
             { l: "a)", t: "Vật thật đặt trước thấu kính phân kì luôn cho ảnh ảo.", a: true }, 
             { l: "b)", t: "Ảnh tạo bởi thấu kính phân kì không thể hiện được trên màn chắn.", a: true }, 
             { l: "c)", t: "Ảnh ảo qua thấu kính phân kì có thể ngược chiều với vật nếu vật ở rất xa.", a: false }, 
             { l: "d)", t: "Thấu kính phân kì có thể tạo ra ảnh ảo lớn hơn vật nếu vật đặt trong khoảng tiêu cự.", a: false } 
-        ], e: "Ý a ĐÚNG vì chùm tia ló luôn là chùm phân kì đối với vật thật. Ý b ĐÚNG vì ảnh ảo không hứng được trên màn. Ý c sai vì ảnh ảo qua thấu kính phân kì luôn cùng chiều vật. Ý d sai vì thấu kính phân kì chỉ tạo được ảnh ảo nhỏ hơn vật (đối với vật thật)." },
+        ], e: "Ý c sai vì ảnh ảo qua thấu kính phân kì luôn cùng chiều vật. Ý d sai vì thấu kính phân kì chỉ tạo được ảnh ảo nhỏ hơn vật." },
         { ctx: "Khi vẽ sơ đồ tạo ảnh qua thấu kính hội tụ:", sts: [ 
             { l: "a)", t: "Sử dụng tia tới song song trục chính và tia tới qua quang tâm để xác định vị trí ảnh.", a: true }, 
             { l: "b)", t: "Ảnh của một điểm nằm trên trục chính cũng nằm trên trục chính.", a: true }, 
             { l: "c)", t: "Nếu vật đặt tại tiêu điểm $F$ thì ảnh thu được là ảnh thật bằng vật.", a: false }, 
             { l: "d)", t: "Khi vật di chuyển từ xa vào sát thấu kính hội tụ (ngoài khoảng tiêu cự), ảnh thật di chuyển ra xa thấu kính.", a: true } 
-        ], e: "Ý a ĐÚNG đây là cách vẽ phổ biến và thuận tiện nhất. Ý b ĐÚNG do tính đối xứng của hệ quang học. Ý c sai vì vật tại $F$ cho chùm tia ló song song, ảnh ở vô cực. Ý d ĐÚNG theo quy luật dịch chuyển vật - ảnh của thấu kính hội tụ." },
+        ], e: "Ý c sai vì vật tại $F$ cho chùm tia ló song song, ảnh ở vô cực. Ý d đúng theo quy luật dịch chuyển vật - ảnh." },
         { ctx: "Thực hiện thí nghiệm với thấu kính và màn chắn:", sts: [ 
             { l: "a)", t: "Khi dịch chuyển màn chắn sau thấu kính phân kì, ta sẽ tìm được một vị trí ảnh hiện rõ nét.", a: false }, 
             { l: "b)", t: "Ảnh ảo chỉ có thể quan sát trực tiếp bằng mắt khi nhìn qua thấu kính.", a: true }, 
             { l: "c)", t: "Mọi thấu kính đều tạo được ảnh thật nếu vật đặt đủ xa.", a: false }, 
             { l: "d)", t: "Ảnh thật xuất hiện trên màn chắn là giao điểm của các tia ló thật sự.", a: true } 
-        ], e: "Ý a sai vì thấu kính phân kì cho ảnh ảo, không hiện trên màn. Ý b ĐÚNG vì mắt ta nhận chùm tia phân kì và tạo ảnh trên võng mạc. Ý c sai vì thấu kính phân kì luôn cho ảnh ảo với vật thật. Ý d ĐÚNG đây là định nghĩa và bản chất của ảnh thật." },
+        ], e: "Ý a sai vì thấu kính phân kì cho ảnh ảo. Ý c sai vì thấu kính phân kì luôn cho ảnh ảo với vật thật." },
         { ctx: "Xét các tia sáng đi qua thấu kính hội tụ:", sts: [ 
             { l: "a)", t: "Tia tới qua quang tâm bị khúc xạ mạnh nhất.", a: false }, 
             { l: "b)", t: "Chùm tia tới song song với trục chính hội tụ tại tiêu điểm ảnh của thấu kính.", a: true }, 
             { l: "c)", t: "Đường truyền của ánh sáng có tính chất thuận nghịch.", a: true }, 
             { l: "d)", t: "Khoảng cách từ quang tâm đến tiêu điểm vật luôn khác khoảng cách từ quang tâm đến tiêu điểm ảnh.", a: false } 
-        ], e: "Ý a sai vì tia qua quang tâm truyền thẳng (không bị khúc xạ đổi phương). Ý b ĐÚNG đây là định nghĩa về tiêu điểm ảnh. Ý c ĐÚNG đây là nguyên lí cơ bản của quang hình học. Ý d sai vì đối với thấu kính mỏng đặt trong môi trường đồng nhất, $OF = OF'$." },
+        ], e: "Ý a sai vì tia qua quang tâm truyền thẳng. Ý d sai vì đối với thấu kính mỏng trong môi trường đồng nhất, $OF = OF'$." },
         { ctx: "Đặc điểm quang học của thấu kính phân kì:", sts: [ 
             { l: "a)", t: "Thấu kính phân kì làm chùm tia tới song song trở thành chùm tia ló phân kì.", a: true }, 
             { l: "b)", t: "Tiêu điểm của thấu kính phân kì là nơi hội tụ của các tia ló thật.", a: false }, 
             { l: "c)", t: "Các lăng kính cấu tạo nên thấu kính phân kì có phần đáy hướng ra phía rìa thấu kính.", a: true }, 
             { l: "d)", t: "Khi thay đổi màu sắc ánh sáng tới, hình dạng thấu kính phân kì sẽ thay đổi.", a: false } 
-        ], e: "Ý a ĐÚNG đây là tác dụng chính của thấu kính phân kì. Ý b sai vì tiêu điểm thấu kính phân kì là giao điểm của các đường kéo dài tia ló. Ý c ĐÚNG giải thích đúng nguyên lí bẻ hướng tia sáng xa trục chính. Ý d sai vì hình dạng thấu kính là cố định, chỉ có góc lệch tia sáng thay đổi nhẹ." },
+        ], e: "Ý b sai vì tiêu điểm thấu kính phân kì là giao điểm của các đường kéo dài tia ló. Ý d sai vì hình dạng thấu kính là cố định." },
         { ctx: "Về hình vẽ tạo ảnh:", sts: [ 
             { l: "a)", t: "Ảnh ảo luôn được vẽ bằng nét đứt.", a: true }, 
             { l: "b)", t: "Tia ló và đường kéo dài của nó được vẽ trên cùng một đường thẳng.", a: true }, 
             { l: "c)", t: "Vật thật và ảnh thật luôn nằm cùng một phía so với thấu kính.", a: false }, 
             { l: "d)", t: "Khoảng cách từ vật đến thấu kính luôn bằng khoảng cách từ ảnh đến thấu kính.", a: false } 
-        ], e: "Ý a ĐÚNG theo quy ước vẽ hình trong quang học. Ý b ĐÚNG vì đường kéo dài chỉ là phần nối dài về phía ngược lại của tia sáng. Ý c sai vì vật thật và ảnh thật luôn nằm ở hai phía khác nhau của thấu kính. Ý d sai vì tỉ lệ khoảng cách phụ thuộc vào vị trí vật và tiêu cự." }
+        ], e: "Ý c sai vì vật thật và ảnh thật luôn nằm ở hai phía khác nhau của thấu kính. Ý d sai vì tỉ lệ khoảng cách phụ thuộc vào vị trí vật." }
     ],
     short: [
-        { q: "Một vật sáng $AB$ cao $2 cm$ đặt vuông góc với trục chính của một thấu kính hội tụ có tiêu cự $f = 10 cm$. Vật cách thấu kính một khoảng $d = 20 cm$. Độ cao của ảnh $A'B'$ thu được là bao nhiêu $cm$?", a: "2", e: "Khi $d = 2f = 2 \\cdot 10 = 20 cm$, vật nằm tại vị trí đặc biệt. Theo sơ đồ tỉ lệ hình học: $\\frac{h'}{h} = \\frac{d'}{d}$. Với $d = 2f$, ta tính được $d' = 2f = 20 cm$. Suy ra $h' = h = 2 cm$." },
-        { q: "Đặt một vật sáng $AB$ trước thấu kính hội tụ có tiêu cự $f = 15 cm$. Để thu được một ảnh thật có kích thước bằng vật, phải đặt vật cách thấu kính một khoảng bao nhiêu $cm$?", a: "30", e: "Để ảnh thật bằng vật ($h' = h$), vật phải đặt tại vị trí $d = 2f$. Thay số: $d = 2 \\cdot 15 = 30 cm$." },
-        { q: "Vật sáng $AB$ đặt vuông góc với trục chính của thấu kính hội tụ có tiêu cự $12 cm$. Ảnh thu được là ảnh thật cách thấu kính $d' = 24 cm$. Khoảng cách từ vật đến thấu kính $d$ là bao nhiêu $cm$?", a: "24", e: "Ta thấy $d' = 24 cm = 2f$. Trong trường hợp ảnh thật cách thấu kính $2f$ thì vật cũng phải cách thấu kính một khoảng $d = 2f$. Vậy $d = 2 \\cdot 12 = 24 cm$." },
-        { q: "Một thấu kính hội tụ tạo ảnh thật $A'B'$ cao gấp $3$ lần vật $AB$. Biết ảnh cách thấu kính $60 cm$. Khoảng cách từ vật đến thấu kính là bao nhiêu $cm$?", a: "20", e: "Tỉ lệ độ cao ảnh và vật: $\\frac{h'}{h} = \\frac{d'}{d}$. Thay số: $3 = \\frac{60}{d}$. Suy ra $d = \\frac{60}{3} = 20 cm$." },
-        { q: "Vật sáng cách thấu kính hội tụ $40 cm$, thấu kính có tiêu cự $20 cm$. Khoảng cách từ ảnh đến thấu kính là bao nhiêu $cm$?", a: "40", e: "Ta có $d = 40 cm$ và $f = 20 cm \\Rightarrow d = 2f$. Khi vật ở vị trí $2f$, ảnh thật cũng ở vị trí $d' = 2f$. Vậy $d' = 40 cm$." },
-        { q: "Một nhóm học sinh thực hiện thí nghiệm vẽ đường truyền tia sáng:<br>1. Tia tới qua quang tâm truyền thẳng.<br>2. Tia tới song song trục chính cho tia ló đi qua tiêu điểm vật $F$.<br>3. Tia tới qua tiêu điểm vật $F$ cho tia ló song song trục chính.<br>4. Tia tới qua tiêu điểm ảnh $F'$ luôn bị phản xạ ngược lại.<br>5. Trục chính là đường thẳng đi qua quang tâm và vuông góc với mặt thấu kính.<br>6. Mọi tia tới thấu kính đều phải đi qua tiêu điểm $F$.<br>7. Tia tới trùng với trục chính sẽ truyền thẳng.<br>8. Tia ló của tia qua quang tâm sẽ đi qua tiêu điểm ảnh $F'$.<br><br><b>Chọn các nhận định ĐÚNG rồi ghi đáp án bằng một dãy số tăng dần từ nhỏ đến lớn.</b>", a: "1357", e: "Nhận định 1, 3, 5, 7 ĐÚNG theo lý thuyết đường truyền tia sáng đặc biệt. Nhận định 2 sai (tia ló qua tiêu điểm ảnh $F'$). Nhận định 4, 6, 8 sai kiến thức cơ bản về thấu kính." },
-        { q: "Nhận định về ảnh tạo bởi thấu kính phân kì:<br>1. Luôn là ảnh ảo.<br>2. Luôn cùng chiều với vật.<br>3. Có thể lớn hơn hoặc nhỏ hơn vật tùy vị trí.<br>4. Luôn nhỏ hơn vật.<br>5. Có thể hứng được trên màn nếu vật ở rất xa.<br>6. Ảnh nằm trong khoảng tiêu cự của thấu kính.<br>7. Ảnh luôn nằm ở phía bên kia thấu kính so với vật.<br>8. Ảnh ảo được tạo bởi giao điểm của chùm tia ló.<br><br><b>Chọn các nhận định ĐÚNG rồi ghi đáp án bằng một dãy số tăng dần từ nhỏ đến lớn.</b>", a: "1246", e: "Nhận định 1, 2, 4, 6 ĐÚNG theo đặc điểm ảnh của thấu kính phân kì. Nhận định 3 sai (chỉ nhỏ hơn). Nhận định 5 sai (ảnh ảo không hứng được). Nhận định 7 sai (ảnh ảo nằm cùng phía vật). Nhận định 8 sai (giao điểm đường kéo dài)." },
-        { q: "Khi tìm hiểu về cấu tạo tương đương của thấu kính bằng các lăng kính nhỏ:<br>1. Thấu kính hội tụ có các lăng kính hướng đáy về trục chính.<br>2. Thấu kính phân kì có các lăng kính hướng đỉnh về trục chính.<br>3. Tia sáng đi qua lăng kính luôn lệch về phía đỉnh.<br>4. Phần giữa của thấu kính hội tụ tương đương với một bản mặt song song.<br>5. Hiện tượng khúc xạ ánh sáng là cơ sở của nguyên lí này.<br>6. Đáy lăng kính của thấu kính phân kì hướng về trục chính.<br>7. Càng xa trục chính, các lăng kính có góc chiết quang càng lớn.<br>8. Nguyên lí này chỉ đúng với ánh sáng đơn sắc màu đỏ.<br><br><b>Chọn các nhận định ĐÚNG rồi ghi đáp án bằng một dãy số tăng dần từ nhỏ đến lớn.</b>", a: "1457", e: "Nhận định 1, 4, 5, 7 ĐÚNG theo mô hình giải thích thấu kính bằng lăng kính. Nhận định 2 sai (thấu kính phân kì hướng đáy ra ngoài, tức là hướng đỉnh vào trong). Nhận định 3 sai (lệch về phía đáy). Nhận định 6 sai. Nhận định 8 sai." }
+        { q: "Một vật sáng $AB$ cao $2 cm$ đặt vuông góc với trục chính của một thấu kính hội tụ có tiêu cự $f = 10 cm$. Vật cách thấu kính một khoảng $d = 20 cm$. Độ cao của ảnh $A'B'$ thu được là bao nhiêu $cm$?", a: "2", e: "Khi $d = 2f = 20 cm$, vật nằm tại vị trí đặc biệt. Sơ đồ hình học: $\\frac{h'}{h} = \\frac{d'}{d}$. Tính được $d' = 20 cm \\Rightarrow h' = h = 2 cm$." },
+        { q: "Đặt một vật sáng $AB$ trước thấu kính hội tụ có tiêu cự $f = 15 cm$. Để thu được một ảnh thật có kích thước bằng vật, phải đặt vật cách thấu kính một khoảng bao nhiêu $cm$?", a: "30", e: "Để ảnh thật bằng vật, vật phải đặt tại vị trí $d = 2f = 2 \\times 15 = 30 cm$." },
+        { q: "Vật sáng $AB$ đặt vuông góc với trục chính của thấu kính hội tụ có tiêu cự $12 cm$. Ảnh thu được là ảnh thật cách thấu kính $d' = 24 cm$. Khoảng cách từ vật đến thấu kính $d$ là bao nhiêu $cm$?", a: "24", e: "Ta thấy $d' = 24 cm = 2f$. Ảnh thật cách thấu kính $2f$ thì vật cũng phải cách thấu kính một khoảng $d = 2f = 2 \\times 12 = 24 cm$." },
+        { q: "Một thấu kính hội tụ tạo ảnh thật $A'B'$ cao gấp $3$ lần vật $AB$. Biết ảnh cách thấu kính $60 cm$. Khoảng cách từ vật đến thấu kính là bao nhiêu $cm$?", a: "20", e: "Tỉ lệ độ cao ảnh và vật: $\\frac{h'}{h} = \\frac{d'}{d} \\Rightarrow 3 = \\frac{60}{d} \\Rightarrow d = 20 cm$." },
+        { q: "Vật sáng cách thấu kính hội tụ $40 cm$, thấu kính có tiêu cự $20 cm$. Khoảng cách từ ảnh đến thấu kính là bao nhiêu $cm$?", a: "40", e: "Ta có $d = 40 cm$ và $f = 20 cm \\Rightarrow d = 2f$. Khi vật ở vị trí $2f$, ảnh thật cũng ở vị trí $d' = 2f = 40 cm$." },
+        { q: "Một nhóm học sinh thực hiện thí nghiệm vẽ đường truyền tia sáng:<br>1. Tia tới qua quang tâm truyền thẳng.<br>2. Tia tới song song trục chính cho tia ló đi qua tiêu điểm vật $F$.<br>3. Tia tới qua tiêu điểm vật $F$ cho tia ló song song trục chính.<br>4. Tia tới qua tiêu điểm ảnh $F'$ luôn bị phản xạ ngược lại.<br>5. Trục chính là đường thẳng đi qua quang tâm và vuông góc với mặt thấu kính.<br>6. Mọi tia tới thấu kính đều phải đi qua tiêu điểm $F$.<br>7. Tia tới trùng với trục chính sẽ truyền thẳng.<br>8. Tia ló của tia qua quang tâm sẽ đi qua tiêu điểm ảnh $F'$.<br><br><b>Chọn các nhận định ĐÚNG rồi ghi đáp án bằng một dãy số tăng dần từ nhỏ đến lớn.</b>", a: "1357", e: "Nhận định 1, 3, 5, 7 ĐÚNG. Nhận định 2 sai (qua $F'$). Nhận định 4, 6, 8 sai." },
+        { q: "Nhận định về ảnh tạo bởi thấu kính phân kì:<br>1. Luôn là ảnh ảo.<br>2. Luôn cùng chiều với vật.<br>3. Có thể lớn hơn hoặc nhỏ hơn vật tùy vị trí.<br>4. Luôn nhỏ hơn vật.<br>5. Có thể hứng được trên màn nếu vật ở rất xa.<br>6. Ảnh nằm trong khoảng tiêu cự của thấu kính.<br>7. Ảnh luôn nằm ở phía bên kia thấu kính so với vật.<br>8. Ảnh ảo được tạo bởi giao điểm của chùm tia ló.<br><br><b>Chọn các nhận định ĐÚNG rồi ghi đáp án bằng một dãy số tăng dần từ nhỏ đến lớn.</b>", a: "1246", e: "Nhận định 1, 2, 4, 6 ĐÚNG. Nhận định 3, 5, 7, 8 sai." },
+        { q: "Khi tìm hiểu về cấu tạo tương đương của thấu kính bằng các lăng kính nhỏ:<br>1. Thấu kính hội tụ có các lăng kính hướng đáy về trục chính.<br>2. Thấu kính phân kì có các lăng kính hướng đỉnh về trục chính.<br>3. Tia sáng đi qua lăng kính luôn lệch về phía đỉnh.<br>4. Phần giữa của thấu kính hội tụ tương đương với một bản mặt song song.<br>5. Hiện tượng khúc xạ ánh sáng là cơ sở của nguyên lí này.<br>6. Đáy lăng kính của thấu kính phân kì hướng về trục chính.<br>7. Càng xa trục chính, các lăng kính có góc chiết quang càng lớn.<br>8. Nguyên lí này chỉ đúng với ánh sáng đơn sắc màu đỏ.<br><br><b>Chọn các nhận định ĐÚNG rồi ghi đáp án bằng một dãy số tăng dần từ nhỏ đến lớn.</b>", a: "1457", e: "Nhận định 1, 4, 5, 7 ĐÚNG theo mô hình giải thích thấu kính bằng lăng kính." }
     ]
 };
 
@@ -622,19 +625,18 @@ const initGame = (m) => {
 
     mode = m;
     isQuizRunning = true; 
-    canCheckCheat = false; 
+    canCheckCheat = false; // Luôn tắt kiểm tra gian lận khi mới bắt đầu cấu hình
     isProcessingCheat = false;
 
     currentExam = [
-        ...shuffle([...QUESTION_BANK.mcq]).slice(0, 12).map((q, i) => ({...q, id: `p1_${i}`, type: 'mcq', section: 'Phần I. Trắc nghiệm khách quan dạng đa lựa chọn (12 câu)', displayNum: i+1})),
+        ...shuffle([...QUESTION_BANK.mcq]).slice(0, 12).map((q, i) => ({...q, id: `p1_${i}`, type: 'mcq', section: 'Phần I. Trắc nghiệm khách quan dạng Đa lựa chọn (12 câu)', displayNum: i+1})),
         ...shuffle([...QUESTION_BANK.tf]).slice(0, 4).map((q, i) => ({...q, id: `p2_${i}`, type: 'tf', section: 'Phần II. Trắc nghiệm khách quan dạng Đúng/Sai (4 câu)', displayNum: i+1})),
-        ...shuffle([...QUESTION_BANK.short]).slice(0, 4).map((q, i) => ({...q, id: `p3_${i}`, type: 'short', section: 'Phần III. Trắc nghiệm khách quan dạng trả lời ngắn (4 câu)', displayNum: i+1}))
+        ...shuffle([...QUESTION_BANK.short]).slice(0, 4).map((q, i) => ({...q, id: `p3_${i}`, type: 'short', section: 'Phần III. Trắc nghiệm khách quan dạng Trả lời ngắn (4 câu)', displayNum: i+1}))
     ];
     userAnswers = {}; currentIdx = 0; 
     timeLeft = (mode === 'test') ? testTimeLimit : practiceTimeLimit;
     quizStartTime = Date.now();
     
-    // Hiển thị lớp phủ thông điệp
     document.getElementById('wish-overlay').style.display = 'flex';
     document.getElementById('wish-cheat-info').style.display = (mode === 'test') ? 'block' : 'none';
     startFire();
@@ -648,13 +650,11 @@ const initGame = (m) => {
         });
     }
 
-    // Sau khi màn hình CỐ LÊN kết thúc (5 giây)
     wishTimeoutId = setTimeout(() => {
         if(!isQuizRunning) return; 
         document.getElementById('wish-overlay').style.display = 'none';
         cancelAnimationFrame(fireRequest);
         
-        // Hiển thị giao diện bài làm
         document.getElementById('main-header').style.display = 'flex';
         showScreen('screen-quiz'); 
         renderQuestion(); 
@@ -696,7 +696,7 @@ function renderQuestion() {
                     <input type="text" class="char-slot" maxlength="1" value="${currentVal[2] !== ' ' ? currentVal[2] : ''}" data-idx="2">
                     <input type="text" class="char-slot" maxlength="1" value="${currentVal[3] !== ' ' ? currentVal[3] : ''}" data-idx="3">
                  </div>
-                 <p style="color:var(--danger); font-size:0.75rem; font-weight:bold; text-align:center;">Lưu ý: Nhập từ trái sang phải(Nếu có ít hơn 4 ký tự ký tự thì các ô sau để trống</p>`;
+                 <p style="color:var(--danger); font-size:0.75rem; font-weight:bold; text-align:center;">Lưu ý: Nhập mỗi ký tự vào một ô</p>`;
     }
     container.innerHTML = html + `</div>`;
     
@@ -821,41 +821,58 @@ async function renderAdmin() {
     } catch(e) { listBody.innerHTML = "<tr><td colspan='10'>Lỗi kết nối Firebase.</td></tr>"; }
 }
 
+let pendingAuthAction = null; 
 let currentDeleteId = null;
+
 function deleteEntry(id) { 
+    pendingAuthAction = 'delete';
     currentDeleteId = id; 
+    document.getElementById('auth-action-title').innerText = "Xác nhận Xoá";
     document.getElementById('delete-pw').value = ''; 
     document.getElementById('delete-auth-modal').style.display = 'flex'; 
 }
 
+document.getElementById('btn-save-config').onclick = () => {
+    pendingAuthAction = 'config';
+    document.getElementById('auth-action-title').innerText = "Đổi Thời gian";
+    document.getElementById('delete-pw').value = ''; 
+    document.getElementById('delete-auth-modal').style.display = 'flex'; 
+};
+
 document.getElementById('btn-delete-cancel').onclick = () => { 
     document.getElementById('delete-auth-modal').style.display = 'none'; 
     currentDeleteId = null; 
+    pendingAuthAction = null;
 };
 
 document.getElementById('btn-delete-confirm').onclick = async () => { 
     const pw = document.getElementById('delete-pw').value;
-    if (pw === "XOA123") { // <-- THẦY CÓ THỂ THAY ĐỔI MẬT KHẨU XOÁ TẠI ĐÂY
+    if (pw === "XOA123") { // <-- THẦY CÓ THỂ THAY ĐỔI MẬT KHẨU TẠI ĐÂY
         document.getElementById('delete-auth-modal').style.display = 'none'; 
-        if(currentDeleteId) {
+        
+        if (pendingAuthAction === 'delete' && currentDeleteId) {
             await deleteDoc(doc(db, 'artifacts', appId_fixed, 'public', 'data', collectionName, currentDeleteId)); 
             renderAdmin(); 
             currentDeleteId = null;
+        } else if (pendingAuthAction === 'config') {
+            const pTime = parseInt(document.getElementById('cfg-time-practice').value);
+            const tTime = parseInt(document.getElementById('cfg-time-test').value);
+            if(isNaN(pTime) || isNaN(tTime) || pTime <= 0 || tTime <= 0) { alert("Vui lòng nhập số phút hợp lệ!"); return; }
+            try { 
+                await setDoc(doc(db, 'artifacts', appId_fixed, 'public', 'data', 'config', 'timer_settings'), { practice: pTime, test: tTime, lastUpdated: new Date().toISOString() }); 
+                practiceTimeLimit = pTime * 60; 
+                testTimeLimit = tTime * 60; 
+                alert("Đã cập nhật thời gian làm bài thành công!"); 
+            } catch(e) { alert("Lỗi khi lưu cấu hình!"); }
         }
+        pendingAuthAction = null;
     } else {
         const alertBox = document.getElementById('custom-alert');
         const oldText = alertBox.innerHTML;
-        alertBox.innerHTML = "⚠️ SAI MẬT KHẨU XOÁ!";
+        alertBox.innerHTML = "⚠️ SAI MẬT KHẨU!";
         alertBox.style.display = 'block';
         setTimeout(() => { alertBox.style.display = 'none'; alertBox.innerHTML = oldText; }, 3000);
     }
-};
-
-document.getElementById('btn-save-config').onclick = async () => {
-    const pTime = parseInt(document.getElementById('cfg-time-practice').value);
-    const tTime = parseInt(document.getElementById('cfg-time-test').value);
-    if(isNaN(pTime) || isNaN(tTime) || pTime <= 0 || tTime <= 0) { alert("Vui lòng nhập số phút hợp lệ!"); return; }
-    try { await setDoc(doc(db, 'artifacts', appId_fixed, 'public', 'data', 'config', 'timer_settings'), { practice: pTime, test: tTime, lastUpdated: new Date().toISOString() }); practiceTimeLimit = pTime * 60; testTimeLimit = tTime * 60; alert("Đã cập nhật thời gian làm bài thành công!"); } catch(e) { alert("Lỗi khi lưu cấu hình!"); }
 };
 
 document.getElementById('btn-admin-open').onclick = () => document.getElementById('admin-auth-modal').style.display = 'flex';
@@ -944,14 +961,14 @@ document.getElementById('btn-export-excel').onclick = () => {
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Báo cáo học tập");
-    XLSX.writeFile(wb, `KetQua_Vly9_ThauKinh_${new Date().getTime()}.xlsx`);
+    XLSX.writeFile(wb, `KetQua_Vly9_${new Date().getTime()}.xlsx`);
 };
 
 function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function startTimer() { clearInterval(timerInt); timerInt = setInterval(() => { timeLeft--; const m = Math.floor(timeLeft/60), s = timeLeft%60, el = document.getElementById('timer'); if(el) el.innerText = `${m}:${s.toString().padStart(2,'0')}`; if(timeLeft <= 0) calculateResult(); }, 1000); }
 
-// --- CHỐNG GIAN LẬN ---
+// --- CHỐNG GIAN LẬN: SỬA LỖI XUNG ĐỘT MÀN HÌNH CHỜ ---
 const triggerCheat = () => { 
     if (canCheckCheat && isQuizRunning && mode === 'test' && !isProcessingCheat) { 
         isProcessingCheat = true;
@@ -961,19 +978,23 @@ const triggerCheat = () => {
     } 
 };
 
+// Theo dõi sự thay đổi toàn màn hình: ngắt ngay nếu thoát
 document.addEventListener('fullscreenchange', () => { 
     if (canCheckCheat && isQuizRunning && mode === 'test' && !document.fullscreenElement) {
         triggerCheat(); 
     }
 });
 
+// Theo dõi tab ẩn: ngắt ngay
 document.addEventListener('visibilitychange', () => { 
     if(canCheckCheat && isQuizRunning && mode === 'test' && document.visibilityState === 'hidden') {
         triggerCheat(); 
     }
 });
 
+// Theo dõi mất tiêu điểm cửa sổ: ngắt ngay
 window.addEventListener('blur', () => {
+    // Độ trễ ngắn để tránh xung đột hệ thống khi overlay chuyển động
     setTimeout(() => {
         if (canCheckCheat && isQuizRunning && mode === 'test' && !document.hasFocus()) {
             triggerCheat();
@@ -994,4 +1015,4 @@ document.getElementById('user_class').oninput = (e) => localStorage.setItem('vly
 </script>
 </body>
 </html>
-<!-- MÃ NGUỒN ỔN ĐỊNH NHẤT - CẬP NHẬT CHUYÊN ĐỀ THẤU KÍNH & FIREBASE MỚI -->
+<!-- MÃ NGUỒN ỔN ĐỊNH NHẤT - FULL 100% -->
