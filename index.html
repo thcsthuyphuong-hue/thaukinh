@@ -427,7 +427,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const appId_fixed = 'khtn9-thau-kinh-v1';
-const collectionName = 'public';
+const collectionName = 'quiz_results'; 
 
 let currentUser = null, quizStartTime = 0, isQuizRunning = false, mode = '', currentIdx = 0, userAnswers = {}, timeLeft = 0, timerInt, currentExam = [];
 const audioPing = new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3');
