@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vật lý 9 - Bài 8: Thấu kính</title>
-    <!-- Hỗ trợ công thức Toán/Lý -->
+    <title> KHOA HỌC TỰ NHIÊN 9 - Bài 8: THẤU KÍNH/title>
+    <!-- Hỗ trợ công thức Toán/Lí -->
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$']] },
@@ -173,7 +173,7 @@
     <div style="background: white; padding: 50px 30px; border-radius: 30px; max-width: 550px; border: 10px solid var(--danger);">
         <h1 style="color:var(--danger); font-size: 3rem; margin:0">CẢNH BÁO!</h1>
         <p style="font-size: 1.2rem; margin: 25px 0; color: #1e293b; font-weight: bold; line-height: 1.5;">
-            Hệ thống phát hiện bạn đã rời khỏi trình duyệt, chia đôi màn hình hoặc mở cửa sổ nổi. Bài làm đã tự động thu lại vì lý do bảo mật.
+            Hệ thống phát hiện bạn đã rời khỏi trình duyệt, chia đôi màn hình hoặc mở cửa sổ nổi. Bài làm đã tự động thu lại vì lí do bảo mật.
         </p>
         <button id="btn-cheat-submit" class="btn btn-fire" style="width:100%;">XEM KẾT QUẢ</button>
     </div>
@@ -210,7 +210,7 @@
 
         <section id="screen-start" class="screen active">
             <div class="school-brand">
-                <h1 class="fire-text" style="font-size: 2.2rem;">ÔN TẬP VẬT LÝ 9</h1>
+                <h1 class="fire-text" style="font-size: 2.2rem;">ÔN TẬP KHOA HỌC TỰ NHIÊN 9 (PHYSICS) </h1>
                 <p style="color:white; opacity:0.8; margin-top:5px;">Chuyên đề: Bài 8. Thấu kính</p>
             </div>
 
@@ -263,7 +263,7 @@
         <!-- Màn hình Admin -->
         <section id="screen-admin" class="screen">
             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 class="fire-text" style="margin:0; font-size: 1.5rem;">📊 QUẢN LÝ KẾT QUẢ</h2>
+                <h2 class="fire-text" style="margin:0; font-size: 1.5rem;">📊 QUẢN LÍ KẾT QUẢ</h2>
                 <button id="btn-admin-close" class="btn btn-gray" style="padding: 5px 15px; font-size: 0.7rem;">THOÁT</button>
             </div>
             
@@ -334,7 +334,7 @@
         </section>
 
         <footer>
-            <div style="font-weight: 800; color: #cbd5e0; margin-bottom: 5px;">HỆ THỐNG LUYỆN TẬP VẬT LÝ 9</div>
+            <div style="font-weight: 800; color: #cbd5e0; margin-bottom: 5px;">HỆ THỐNG LUYỆN TẬP KHOA HỌC TỰ NHIÊN 9 (PHYSICS)</div>
             <div style="font-size: 0.85rem;">Bản quyền thuộc về Trường THCS Thuỷ Phương, Thành phố Huế</div>
         </footer>
     </div>
@@ -975,7 +975,7 @@ document.getElementById('admin-filter-class').onchange = () => renderAdmin();
 document.getElementById('admin-filter-school').onchange = () => renderAdmin();
 document.getElementById('btn-cheat-submit').onclick = () => { document.getElementById('cheat-modal').style.display = 'none'; document.getElementById('btn-report-open').style.display = 'block'; calculateResult(); };
 
-// XỬ LÝ BÁO LỖI (HỌC SINH)
+// XỬ LÍ BÁO LỖI (HỌC SINH)
 document.getElementById('btn-report-open').onclick = () => {
     document.getElementById('report-modal').style.display = 'flex';
 };
@@ -1056,7 +1056,7 @@ document.getElementById('btn-report-submit').onclick = async () => {
 };
 
 
-// XỬ LÝ HỘP THƯ LỖI (ADMIN)
+// XỬ LÍ HỘP THƯ LỖI (ADMIN)
 async function renderAdminInbox() {
     document.getElementById('admin-inbox-modal').style.display = 'flex';
     const listBody = document.getElementById('inbox-list-body');
