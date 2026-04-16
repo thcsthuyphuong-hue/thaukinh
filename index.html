@@ -292,7 +292,7 @@
         <section id="screen-result" class="screen">
             <div class="card" style="background: linear-gradient(135deg, #1e40af, #1e1b4b); color: white; text-align: center; padding: 40px 20px;">
                 <h2 id="res-name" class="fire-text" style="font-size: 1.8rem; margin-bottom: 10px;">HỌC SINH</h2>
-                <div id="res-meta" style="opacity: 0.9;">Thông tin</div>
+                <div id="res-meta" style="opacity: 0.9;">Thông margin</div>
                 <div style="margin: 25px 0;">
                     <div id="final-score" style="font-size: 6rem; font-weight: 900; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.5);">0.0</div>
                     <div id="my-rank-text" style="margin-top: 10px; font-weight: bold; color: #ffae00; font-size: 1.5rem;">HẠNG ...</div>
@@ -476,43 +476,46 @@ let reportImageBase64 = "";
 function autoScaleApp() {
     const container = document.querySelector('.container');
     const wrapper = document.getElementById('app-wrapper');
+    const adminScreen = document.getElementById('screen-admin');
+    const reviewArea = document.getElementById('review-area');
+    
     if (!container || !wrapper) return;
 
-    // Nếu là thiết bị di động (chiều rộng <= 768px), tắt Scale để cuộn tự nhiên
-    if (window.innerWidth <= 768) {
+    // 1. TẮT SCALE NẾU Ở MÀN HÌNH ADMIN, XEM GIẢI THÍCH HOẶC TRÊN ĐIỆN THOẠI
+    const isReviewing = reviewArea && reviewArea.style.display === 'block';
+    
+    if ((adminScreen && adminScreen.classList.contains('active')) || window.innerWidth <= 768 || isReviewing) {
         container.style.transform = `none`;
         wrapper.style.height = 'auto';
         wrapper.style.overflow = 'visible';
-        container.style.marginBottom = '50px';
+        container.style.marginBottom = '50px'; // Thêm khoảng thở
         return; 
     }
 
-    // --- BẮT ĐẦU THUẬT TOÁN DYNAMIC SCALE CHO DESKTOP ---
-    // 1. Reset lại trạng thái ban đầu để đo đạc chiều cao thật
+    // 2. BẬT SCALE ĐỘNG CHO BÀI THI TRÊN MÁY TÍNH
+    // Reset về trạng thái nguyên bản để đo đạc
     container.style.transform = `none`;
     wrapper.style.height = 'auto';
     wrapper.style.overflow = 'visible';
     container.style.marginBottom = '0px';
 
-    // Ép trình duyệt cập nhật DOM (Reflow) để lấy chiều cao chính xác
+    // Ép reflow để trình duyệt vẽ lại DOM
     void container.offsetHeight; 
 
-    // 2. Lấy chiều cao thực tế của nội dung và chiều cao của cửa sổ
-    const naturalHeight = container.offsetHeight; 
+    // Lấy chiều cao thực (Cộng thêm 20px viền an toàn để không sát mép)
+    const naturalHeight = container.offsetHeight + 20; 
     const windowHeight = window.innerHeight;
 
-    // 3. Tính toán tỉ lệ và ép khung
+    // Ép khít màn hình 100% không cần thanh cuộn
     if (naturalHeight > windowHeight) {
-        // Nếu nội dung dài hơn cửa sổ -> Thu nhỏ lại chính xác % phần dư để vừa khít 100%
         const ratio = windowHeight / naturalHeight;
         container.style.transform = `scale(${ratio})`;
         wrapper.style.height = `${windowHeight}px`;
-        wrapper.style.overflow = 'hidden'; // Khóa thanh cuộn
+        wrapper.style.overflow = 'hidden'; 
     } else {
-        // Nếu nội dung ngắn hơn hoặc bằng cửa sổ -> Không cần thu nhỏ (tỉ lệ 1)
         container.style.transform = `scale(1)`;
         wrapper.style.height = `${windowHeight}px`;
-        wrapper.style.overflow = 'hidden'; // Vẫn khóa thanh cuộn để fix cứng màn hình
+        wrapper.style.overflow = 'hidden'; 
     }
 }
 window.addEventListener('resize', autoScaleApp);
@@ -778,7 +781,7 @@ function renderQuestion() {
         html += `<h3>Câu ${q.displayNum}. ${q.q}</h3>`;
         if(q.img) html += `<img src="${q.img}" class="q-img" alt="Ảnh minh họa" onerror="this.style.display='none'">`;
         const currentVal = (userAnswers[q.id] || "").padEnd(4, " ");
-        html += `<div class="short-answer-wrapper"><input type="text" class="char-slot" maxlength="1" value="${currentVal[0] !== ' ' ? currentVal[0] : ''}" data-idx="0"><input type="text" class="char-slot" maxlength="1" value="${currentVal[1] !== ' ' ? currentVal[1] : ''}" data-idx="1"><input type="text" class="char-slot" maxlength="1" value="${currentVal[2] !== ' ' ? currentVal[2] : ''}" data-idx="2"><input type="text" class="char-slot" maxlength="1" value="${currentVal[3] !== ' ' ? currentVal[3] : ''}" data-idx="3"></div><p style="color:var(--danger); font-size:0.8rem; font-weight:bold; text-align:center;">Lưu ý: Nhập mỗi ký tự vào một ô</p>`;
+        html += `<div class="short-answer-wrapper"><input type="text" class="char-slot" maxlength="1" value="${currentVal[0] !== ' ' ? currentVal[0] : ''}" data-idx="0"><input type="text" class="char-slot" maxlength="1" value="${currentVal[1] !== ' ' ? currentVal[1] : ''}" data-idx="1"><input type="text" class="char-slot" maxlength="1" value="${currentVal[2] !== ' ' ? currentVal[2] : ''}" data-idx="2"><input type="text" class="char-slot" maxlength="1" value="${currentVal[3] !== ' ' ? currentVal[3] : ''}" data-idx="3"></div><p style="color:var(--danger); font-size:0.8rem; font-weight:bold; text-align:center;">        html += `<div class="short-answer-wrapper"><input type="text" class="char-slot" maxlength        html += `<div class="short-answer-wrapper"><input type="text" class="char-slot" maxlength="1" value="${currentVal[0] !== ' ' ? currentVal[0] : ''}" data-idx="0"><input type="text" class="char-slot" maxlength="1" value="${currentVal[1] !== ' ' ? currentVal[1] : ''}" data-idx="1"><input type="text" class="char-slot" maxlength="1" value="${currentVal[2] !== ' ' ? currentVal[2] : ''}" data-idx="2"><input type="text" class="char-slot" maxlength="1" value="${currentVal[3] !== ' ' ? currentVal[3] :  Nhập mỗi ký tự vào một ô từ trái sang phải,kể cả dấu âm hay dấu phẩy</p>`;
     }
     container.innerHTML = html + `</div>`;
     
