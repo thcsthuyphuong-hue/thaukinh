@@ -1,9 +1,9 @@
-<!-- MÃ NGUỒN ỔN ĐỊNH NHẤT - TÍCH HỢP QUẢN TRỊ NÂNG CAO, GIỚI HẠN GỢI Ý & BÁO LỖI (HÌNH ẢNH) -->
+<!-- MÃ NGUỒN ỔN ĐỊNH NHẤT - TỐI ƯU MOBILE/DESKTOP, BÁO LỖI HÌNH ẢNH, GIỚI HẠN GỢI Ý -->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vật lý 9 - Bài 8: Thấu kính</title>
     <!-- Hỗ trợ công thức Toán/Lý -->
     <script>
@@ -23,21 +23,22 @@
             --bg: #0f172a; --card: #ffffff; --text: #1e293b; --accent: #f59e0b;
         }
         
-        * { -webkit-user-select: none !important; -moz-user-select: none !important; -ms-user-select: none !important; user-select: none !important; -webkit-touch-callout: none !important; }
-        input, textarea { -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }
+        * { -webkit-user-select: none !important; -moz-user-select: none !important; -ms-user-select: none !important; user-select: none !important; -webkit-touch-callout: none !important; box-sizing: border-box; }
+        input, textarea, select { -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        .container { max-width: 1100px; margin: 0 auto; min-height: 850px; display: flex; flex-direction: column; position: relative; z-index: 1; transform-origin: top center; transition: transform 0.2s ease-out; }
+        /* CONTAINER CO GIÃN CHO DESKTOP */
+        .container { max-width: 1100px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 1; transform-origin: top center; transition: transform 0.2s ease-out; }
         
-        .q-img { display: block; max-width: 100%; max-height: 280px; margin: 15px auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; background: #fff; }
-        #custom-alert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--danger); color: white; padding: 12px 25px; border-radius: 50px; font-weight: bold; z-index: 100000; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4); display: none; animation: slideInAlert 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid white; font-size: 0.95rem; text-transform: uppercase; text-align: center; }
+        .q-img { display: block; max-width: 100%; max-height: 280px; margin: 15px auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; background: #fff; object-fit: contain; }
+        #custom-alert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--danger); color: white; padding: 12px 25px; border-radius: 50px; font-weight: bold; z-index: 100000; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4); display: none; animation: slideInAlert 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid white; font-size: 0.95rem; text-transform: uppercase; text-align: center; width: max-content; max-width: 90%; }
         @keyframes slideInAlert { from { top: -50px; opacity: 0; } to { top: 20px; opacity: 1; } }
 
-        .fire-text { display: inline-block; color: #fff; text-shadow: 0 0 10px #ff8d00, 0 0 20px #ff4e00, 0 0 30px #d43300; animation: burn 1.5s infinite alternate; }
+        .fire-text { display: inline-block; color: #fff; text-shadow: 0 0 10px #ff8d00, 0 0 20px #ff4e00, 0 0 30px #d43300; animation: burn 1.5s infinite alternate; margin: 0; }
         @keyframes burn { 0% { transform: skew(0.5deg); text-shadow: 0 0 10px #ff8d00, 0 0 20px #ff4e00; } 100% { transform: skew(-0.5deg); text-shadow: 0 0 15px #ff8d00, 0 0 35px #ff4e00, 0 0 50px #ff0000; } }
 
-        header { background: rgba(30, 64, 175, 0.95); backdrop-filter: blur(5px); color: white; padding: 15px 20px; display: none; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 100; }
-        .timer { background: #fee2e2; color: #dc2626; padding: 8px 20px; border-radius: 20px; font-weight: bold; border: 2px solid #ef4444; font-size: 1.1rem; }
+        header { background: rgba(30, 64, 175, 0.95); backdrop-filter: blur(5px); color: white; padding: 10px 20px; display: none; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 100; }
+        .timer { background: #fee2e2; color: #dc2626; padding: 8px 20px; border-radius: 20px; font-weight: bold; border: 2px solid #ef4444; font-size: 1.1rem; flex-shrink: 0; }
 
         #wish-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; text-align: center; overflow: hidden; }
         #fire-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
@@ -50,33 +51,37 @@
         @keyframes fadeInSub { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulseWarning { 0% { transform: scale(1); background: #ef4444; } 50% { transform: scale(1.03); background: #dc2626; } 100% { transform: scale(1); background: #ef4444; } }
 
-        .screen { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .screen { display: none; padding: 20px; animation: fadeIn 0.4s ease; flex: 1; }
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .school-brand { text-align: center; padding: 50px 20px; background: linear-gradient(180deg, rgba(30, 64, 175, 1) 0%, rgba(15, 23, 42, 1) 100%); color: white; border-radius: 0 0 50px 50px; margin: -20px auto 30px auto; border-bottom: 4px solid #ff4e00; max-width: 800px; width: 95%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .card { background: var(--card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        /* TỐI ƯU BANNER VÀ FORM ĐIỀN THÔNG TIN CHUẨN */
+        .school-brand { text-align: center; padding: 40px 20px; background: linear-gradient(180deg, rgba(30, 64, 175, 1) 0%, rgba(15, 23, 42, 1) 100%); color: white; border-radius: 0 0 50px 50px; margin: 0 auto 30px auto; border-bottom: 4px solid #ff4e00; max-width: 800px; width: 95%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .card { background: var(--card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .card-start { max-width: 550px; margin: -50px auto 30px auto; position: relative; z-index: 2; display: block; background: var(--card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid #e2e8f0; }
+        
         .section-title { background: #f1f5f9; padding: 12px 18px; border-left: 6px solid #ff4e00; font-weight: bold; margin-bottom: 20px; color: var(--primary); font-size: 1.1rem; text-transform: uppercase; }
+        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
-        .option { border: 2px solid #e2e8f0; border-radius: 12px; padding: 14px 20px; margin-bottom: 12px; cursor: pointer; transition: 0.3s; background: #fff; font-size: 1rem; }
+        .option { border: 2px solid #e2e8f0; border-radius: 12px; padding: 14px 20px; margin-bottom: 12px; cursor: pointer; transition: 0.3s; background: #fff; font-size: 1rem; line-height: 1.4; }
         .option.selected { border-color: #ff4e00; background: #fff7ed; font-weight: bold; }
         .option.correct { background: #d1fae5; border-color: var(--success); color: #065f46; font-weight: bold; }
         .option.wrong { background: #fee2e2; border-color: var(--danger); color: #991b1b; }
         
-        .tf-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #f1f5f9; gap: 10px; }
-        .tf-btn { border: 2px solid #cbd5e0; background: white; padding: 8px 18px; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 65px; transition: 0.2s; }
+        .tf-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #f1f5f9; gap: 15px; line-height: 1.4; }
+        .tf-btn { border: 2px solid #cbd5e0; background: white; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 75px; transition: 0.2s; }
         .tf-btn.active-t { background: var(--success); color: white; border-color: var(--success); }
         .tf-btn.active-f { background: var(--danger); color: white; border-color: var(--danger); }
 
-        .btn { padding: 12px 24px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .btn { padding: 12px 24px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 0.95rem; }
         .btn-fire { background: linear-gradient(45deg, #ff4e00, #ff8d00); color: white; box-shadow: 0 4px 15px rgba(255, 78, 0, 0.4); }
         .btn-gray { background: #cbd5e0; color: #475569; }
         
-        .btn-admin-float { position: fixed; bottom: 20px; right: 20px; z-index: 1000; background: #475569; color: white; border-radius: 50px; padding: 10px 20px; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); opacity: 0.8; cursor: pointer; border: none; }
+        .btn-admin-float { position: fixed; bottom: 20px; right: 20px; z-index: 1000; background: #475569; color: white; border-radius: 50px; padding: 10px 20px; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); opacity: 0.85; cursor: pointer; border: none; font-weight: bold; }
         .btn-report-float { position: fixed; bottom: 20px; left: 20px; z-index: 1000; background: var(--danger); color: white; border-radius: 50px; padding: 10px 20px; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(239,68,68,0.4); opacity: 0.9; cursor: pointer; border: 2px solid #fff; font-weight: bold; }
 
-        input[type="text"], input[type="password"], input[type="number"], textarea { padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; width: 100%; box-sizing: border-box; outline: none; transition: 0.3s; font-size: 1rem; }
-        input[type="text"]:focus, input[type="number"]:focus, textarea:focus { border-color: #ff4e00; }
+        input[type="text"], input[type="password"], input[type="number"], textarea, select { padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; width: 100%; box-sizing: border-box; outline: none; transition: 0.3s; font-size: 1rem; font-family: inherit; }
+        input:focus, textarea:focus, select:focus { border-color: #ff4e00; background: #fffbeb; }
 
         .rank-badge { font-size: 1.5rem; font-weight: 900; margin-top: 15px; padding: 10px 25px; border-radius: 50px; display: inline-block; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); color: white; }
         
@@ -87,33 +92,62 @@
         .admin-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
         .stat-box { flex: 1; min-width: 130px; background: white; padding: 15px; border-radius: 15px; text-align: center; border-bottom: 4px solid #cbd5e0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 20000; display: none; justify-content: center; align-items: center; padding: 20px; overflow-y: auto;}
-        .modal-box { background: white; padding: 30px; border-radius: 25px; width: 100%; max-width: 500px; text-align: center; position: relative; margin: auto; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 20000; display: none; justify-content: center; align-items: center; padding: 15px; overflow-y: auto;}
+        .modal-box { background: white; padding: 30px; border-radius: 20px; width: 100%; max-width: 500px; text-align: center; position: relative; margin: auto; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
         
         #cheat-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 30000; display: none; justify-content: center; align-items: center; text-align: center; padding: 20px;}
-        footer { padding: 40px 20px; text-align: center; color: #94a3b8; background: #0f172a; font-size: 0.85rem; border-top: 2px solid #1e293b; margin-top: auto; }
+        footer { padding: 30px 20px; text-align: center; color: #94a3b8; background: #0f172a; font-size: 0.85rem; border-top: 2px solid #1e293b; margin-top: auto; }
 
         .badge-mode { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; color: white; text-transform: uppercase; }
         .badge-test { background: var(--danger); }
         .badge-practice { background: var(--secondary); }
 
-        .short-answer-wrapper { display: flex; gap: 12px; justify-content: center; margin: 25px 0; }
-        .char-slot { width: 50px; height: 60px; border: 3px solid #cbd5e0; border-radius: 10px; text-align: center; font-size: 1.8rem; font-weight: 900; color: var(--primary); outline: none; }
-        .char-slot:focus { border-color: var(--accent); background: #fff7ed; }
+        .short-answer-wrapper { display: flex; gap: 10px; justify-content: center; margin: 25px 0; flex-wrap: wrap; }
+        .char-slot { width: 45px; height: 55px; border: 3px solid #cbd5e0; border-radius: 10px; text-align: center; font-size: 1.5rem; font-weight: 900; color: var(--primary); outline: none; transition: 0.2s; }
+        .char-slot:focus { border-color: var(--accent); background: #fff7ed; transform: scale(1.05); }
 
-        .explanation { margin-top: 15px; padding: 12px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 0.9rem; color: #475569; line-height: 1.5; }
-        .score-badge { float: right; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
+        .explanation { margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 0.95rem; color: #334155; line-height: 1.6; }
+        .score-badge { float: right; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
         .score-plus { background: #dcfce7; color: #166534; }
         .score-zero { background: #fee2e2; color: #991b1b; }
 
-        @media (max-width: 640px) {
-            .wish-title { font-size: 3rem; }
-            .wish-sub { font-size: 1.3rem; }
+        /* ========================================= */
+        /* RESPONSIVE DESIGN - TỐI ƯU CHO ĐIỆN THOẠI */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            .container { min-height: 100%; height: auto; }
+            .screen { padding: 15px 10px; }
+            
+            /* Tối ưu Banner và Form Khởi động */
+            .school-brand { padding: 25px 15px; border-radius: 0 0 30px 30px; margin-bottom: 15px; width: 100%; border-bottom: 3px solid #ff4e00; }
+            .fire-text { font-size: 1.6rem !important; }
+            .card-start { margin-top: -15px; padding: 20px 15px; }
+            .grid-2-col { grid-template-columns: 1fr; gap: 10px; } /* Xếp dọc 1 cột */
+            
+            /* Tối ưu Bài thi */
             .card { padding: 20px 15px; }
-            #final-score { font-size: 4rem; }
-            .tf-row { flex-direction: column; align-items: flex-start; gap: 8px; }
-            .tf-btn { width: 100%; }
-            .btn-admin-float, .btn-report-float { font-size: 0.7rem; padding: 8px 15px; bottom: 10px;}
+            h3 { font-size: 1.1rem; line-height: 1.5; }
+            .option { padding: 12px 15px; font-size: 0.95rem; }
+            .tf-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .tf-row > span { margin-bottom: 5px; display: block; }
+            .tf-row > div { width: 100%; display: flex; justify-content: space-between; }
+            .tf-btn { flex: 1; text-align: center; padding: 12px; } /* Nút bự dễ bấm */
+            .char-slot { width: 40px; height: 50px; font-size: 1.3rem; }
+
+            /* Nút nổi & Tiện ích */
+            .btn-admin-float, .btn-report-float { font-size: 0.7rem; padding: 8px 15px; bottom: 10px; z-index: 10000; }
+            .btn-report-float { left: 10px; }
+            .btn-admin-float { right: 10px; }
+            .timer { padding: 6px 15px; font-size: 1rem; }
+            
+            /* Màn hình kết quả & Modal */
+            #final-score { font-size: 4rem !important; }
+            .wish-title { font-size: 3rem; }
+            .wish-sub { font-size: 1.2rem; }
+            .cheat-warning-box { font-size: 1rem; padding: 15px; width: 90%; }
+            .modal-box { padding: 20px 15px; width: 95%; }
+            .admin-controls { flex-direction: column; align-items: stretch; }
+            .admin-controls > div, .admin-controls > button { width: 100%; margin-bottom: 5px; }
         }
     </style>
 </head>
@@ -136,11 +170,11 @@
 
 <div id="confirm-finish-modal" class="modal-overlay">
     <div class="modal-box">
-        <h2 style="color: var(--primary)">Xác nhận nộp bài?</h2>
-        <p>Bạn có chắc chắn muốn kết thúc bài làm và xem kết quả ngay không?</p>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button id="btn-modal-cancel" class="btn btn-gray" style="flex:1">LÀM TIẾP</button>
-            <button id="btn-modal-confirm" class="btn btn-fire" style="flex:1">NỘP BÀI</button>
+        <h2 style="color: var(--primary); margin-top:0;">Xác nhận nộp bài?</h2>
+        <p style="color:#475569; line-height: 1.5;">Bạn có chắc chắn muốn kết thúc bài làm và xem kết quả ngay không?</p>
+        <div class="grid-2-col" style="margin-top:20px;">
+            <button id="btn-modal-cancel" class="btn btn-gray">LÀM TIẾP</button>
+            <button id="btn-modal-confirm" class="btn btn-fire">NỘP BÀI</button>
         </div>
     </div>
 </div>
@@ -148,31 +182,31 @@
 <!-- Modal Báo Lỗi Học Sinh -->
 <div id="report-modal" class="modal-overlay">
     <div class="modal-box" style="text-align: left;">
-        <h2 style="color: var(--danger); text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 1.5rem;">GỬI BÁO LỖI</h2>
+        <h2 style="color: var(--danger); text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 1.4rem;">GỬI BÁO LỖI</h2>
         <div style="margin-bottom: 15px;">
-            <label style="font-size: 0.8rem; font-weight: bold; color: #64748b;">Vị trí câu lỗi / Lỗi gặp phải:</label>
+            <label style="font-size: 0.85rem; font-weight: bold; color: #64748b; display:block; margin-bottom:5px;">Vị trí câu lỗi / Lỗi gặp phải:</label>
             <input type="text" id="report-question" placeholder="Ví dụ: Câu 5 phần Đ/S, Hình ảnh câu 2...">
         </div>
         <div style="margin-bottom: 15px;">
-            <label style="font-size: 0.8rem; font-weight: bold; color: #64748b;">Mô tả chi tiết:</label>
+            <label style="font-size: 0.85rem; font-weight: bold; color: #64748b; display:block; margin-bottom:5px;">Mô tả chi tiết:</label>
             <textarea id="report-detail" rows="3" placeholder="Ghi rõ lỗi sai đáp án, lỗi chính tả, hoặc lỗi hiển thị..."></textarea>
         </div>
         <div style="margin-bottom: 15px;">
-            <label style="font-size: 0.8rem; font-weight: bold; color: #64748b;">Đính kèm hình ảnh (Tùy chọn):</label>
+            <label style="font-size: 0.85rem; font-weight: bold; color: #64748b; display:block; margin-bottom:5px;">Đính kèm hình ảnh (Tùy chọn):</label>
             <input type="file" id="report-file" accept="image/*" style="padding: 10px; font-size: 0.85rem;">
             <img id="report-img-preview" src="" style="max-width: 100%; max-height: 150px; margin-top: 10px; display: none; border-radius: 8px; border: 1px solid #ccc; object-fit: contain;">
         </div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button id="btn-report-cancel" class="btn btn-gray" style="flex:1">HỦY</button>
-            <button id="btn-report-submit" class="btn btn-fire" style="flex:1; background: var(--danger);">GỬI PHẢN HỒI</button>
+        <div class="grid-2-col" style="margin-top:25px;">
+            <button id="btn-report-cancel" class="btn btn-gray">HỦY</button>
+            <button id="btn-report-submit" class="btn btn-fire" style="background: var(--danger);">GỬI PHẢN HỒI</button>
         </div>
     </div>
 </div>
 
 <div id="cheat-modal">
-    <div style="background: white; padding: 50px 30px; border-radius: 30px; max-width: 550px; border: 10px solid var(--danger);">
-        <h1 style="color:var(--danger); font-size: 3rem; margin:0">CẢNH BÁO!</h1>
-        <p style="font-size: 1.2rem; margin: 25px 0; color: #1e293b; font-weight: bold; line-height: 1.5;">
+    <div style="background: white; padding: 40px 25px; border-radius: 20px; max-width: 500px; width: 90%; border: 8px solid var(--danger);">
+        <h1 style="color:var(--danger); font-size: 2.5rem; margin:0">CẢNH BÁO!</h1>
+        <p style="font-size: 1.1rem; margin: 20px 0; color: #1e293b; font-weight: bold; line-height: 1.5;">
             Hệ thống phát hiện bạn đã rời khỏi trình duyệt, chia đôi màn hình hoặc mở cửa sổ nổi. Bài làm đã tự động thu lại vì lý do bảo mật.
         </p>
         <button id="btn-cheat-submit" class="btn btn-fire" style="width:100%;">XEM KẾT QUẢ</button>
@@ -181,13 +215,13 @@
 
 <!-- Modal Hộp thư báo lỗi (Admin) -->
 <div id="admin-inbox-modal" class="modal-overlay">
-    <div class="card" style="width:100%; max-width:900px; text-align:left; max-height: 90vh; overflow-y: auto;">
+    <div class="card" style="width:100%; max-width:900px; text-align:left; max-height: 90vh; overflow-y: auto; margin: auto;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;">
-            <h2 style="color: var(--danger); margin:0;">HỘP THƯ BÁO LỖI 📩</h2>
+            <h2 style="color: var(--danger); margin:0; font-size: 1.2rem;">HỘP THƯ BÁO LỖI 📩</h2>
             <button id="btn-inbox-close" class="btn btn-gray" style="padding: 8px 15px; font-size:0.8rem;">ĐÓNG ✖</button>
         </div>
         <div class="admin-table-container">
-            <table class="admin-table" style="min-width: 800px;">
+            <table class="admin-table" style="min-width: 700px;">
                 <thead><tr><th>Thời gian</th><th>Người báo</th><th>Vị trí lỗi</th><th>Chi tiết</th><th>Đính kèm</th><th>Thao tác</th></tr></thead>
                 <tbody id="inbox-list-body"></tbody>
             </table>
@@ -197,34 +231,49 @@
 
 <!-- Modal Xem Ảnh Phóng To -->
 <div id="image-viewer-modal" class="modal-overlay" style="z-index: 40000;" onclick="this.style.display='none'">
-    <img id="image-viewer-img" src="" style="max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-    <p style="color: white; position: absolute; bottom: 20px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Chạm bất kỳ đâu để đóng</p>
+    <img id="image-viewer-img" src="" style="max-width: 95%; max-height: 90vh; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain;">
+    <p style="color: white; position: absolute; bottom: 20px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8); text-align: center; width: 100%;">Chạm bất kỳ đâu để đóng</p>
 </div>
 
 <div id="app-wrapper" style="width: 100%; overflow-x: hidden;">
     <div class="container">
         <header id="main-header">
-            <div style="font-weight: 900; letter-spacing: 1px; color: #facc15;">HUE SMART TEST 7991</div>
-            <div class="timer" id="timer">--:--</div>
+            <div style="display: flex; flex-direction: column; overflow: hidden; flex: 1; padding-right: 10px;">
+                <div style="font-weight: 900; letter-spacing: 1px; color: #facc15; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">HUE SMART TEST 7991</div>
+                <div id="header-user-info" style="font-size: 0.75rem; color: #e2e8f0; margin-top: 3px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+            </div>
+            <div class="timer" id="timer" style="flex-shrink: 0;">--:--</div>
         </header>
 
         <section id="screen-start" class="screen active">
             <div class="school-brand">
                 <h1 class="fire-text" style="font-size: 2.2rem;">ÔN TẬP VẬT LÝ 9</h1>
-                <p style="color:white; opacity:0.8; margin-top:5px;">Chuyên đề: Bài 8. Thấu kính</p>
+                <p style="color:white; opacity:0.9; margin-top:8px; font-weight: 600; letter-spacing: 0.5px;">Chuyên đề: Bài 8. Thấu kính</p>
             </div>
 
-            <div class="card" style="max-width: 550px; margin: -40px auto 30px auto; position: relative; z-index: 2; display: block;">
-                <h3 style="text-align:center; margin-bottom: 20px; color: var(--primary);">NHẬP THÔNG TIN THÍ SINH</h3>
+            <div class="card-start">
+                <h3 style="text-align:center; margin-top: 0; margin-bottom: 20px; color: var(--primary);">NHẬP THÔNG TIN THÍ SINH</h3>
                 <p id="start-error" style="color: var(--danger); text-align: center; font-weight: bold; margin-bottom: 15px; display: none;">⚠️ Vui lòng điền đầy đủ các thông tin!</p>
-                <div style="margin-bottom: 15px;"><label style="font-size: 0.8rem; font-weight: bold; color: #64748b;">Họ và tên:</label><input type="text" id="username" placeholder="Nhập tên hoặc để trống (mặc định 'input')"></div>
-                <div style="margin-bottom: 15px;"><label style="font-size: 0.8rem; font-weight: bold; color: #64748b;">Trường:</label><input type="text" id="user_school" placeholder="Nhập trường hoặc để trống (mặc định 'input')"></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div style="margin-bottom: 15px;"><label style="font-size: 0.8rem; font-weight: bold; color: #64748b;">Lớp:</label><input type="text" id="user_class" placeholder="Ví dụ: 9A1"></div>
-                    <div style="margin-bottom: 25px;"><label style="font-size: 0.8rem; font-weight: bold; color: #64748b;">Số báo danh:</label><input type="text" id="user_sbd" placeholder="Ví dụ: 01"></div>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 0.85rem; font-weight: bold; color: #64748b; display:block; margin-bottom:5px;">Họ và tên:</label>
+                    <input type="text" id="username" placeholder="Nhập tên (hoặc để trống mặc định 'input')">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 0.85rem; font-weight: bold; color: #64748b; display:block; margin-bottom:5px;">Trường:</label>
+                    <input type="text" id="user_school" placeholder="Nhập trường (hoặc để trống)">
+                </div>
+                <div class="grid-2-col" style="margin-bottom: 25px;">
+                    <div>
+                        <label style="font-size: 0.85rem; font-weight: bold; color: #64748b; display:block; margin-bottom:5px;">Lớp:</label>
+                        <input type="text" id="user_class" placeholder="Ví dụ: 9A1">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85rem; font-weight: bold; color: #64748b; display:block; margin-bottom:5px;">Số báo danh:</label>
+                        <input type="text" id="user_sbd" placeholder="Ví dụ: 01">
+                    </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="grid-2-col">
                     <button id="btn-init-practice" class="btn btn-gray">LUYỆN TẬP</button>
                     <button id="btn-init-test" class="btn btn-fire">KIỂM TRA</button>
                 </div>
@@ -233,25 +282,25 @@
 
         <section id="screen-quiz" class="screen">
             <div id="quiz-content"></div>
-            <div style="display:flex; justify-content: space-between; margin-top: 30px; gap: 15px;">
+            <div style="display:flex; justify-content: space-between; margin-top: 30px; gap: 10px;">
                 <button id="btn-prev" class="btn btn-gray">QUAY LẠI</button>
                 <button class="btn btn-fire" id="btn-next" style="flex:1">TIẾP THEO</button>
-                <button id="btn-finish" class="btn" style="background:var(--success); color:white; display:none">HOÀN THÀNH 🏁</button>
+                <button id="btn-finish" class="btn" style="background:var(--success); color:white; display:none; flex:1;">HOÀN THÀNH 🏁</button>
             </div>
         </section>
 
         <section id="screen-result" class="screen">
             <div class="card" style="background: linear-gradient(135deg, #1e40af, #1e1b4b); color: white; text-align: center; padding: 40px 20px;">
-                <h2 id="res-name" class="fire-text">HỌC SINH</h2>
-                <div id="res-meta">Thông tin</div>
-                <div style="margin: 30px 0;">
+                <h2 id="res-name" class="fire-text" style="font-size: 1.8rem; margin-bottom: 10px;">HỌC SINH</h2>
+                <div id="res-meta" style="opacity: 0.9;">Thông tin</div>
+                <div style="margin: 25px 0;">
                     <div id="final-score" style="font-size: 6rem; font-weight: 900; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.5);">0.0</div>
-                    <div id="my-rank-text" style="margin-top: 10px; font-weight: bold; color: #ffae00; font-size: 1.8rem;">HẠNG ...</div>
+                    <div id="my-rank-text" style="margin-top: 10px; font-weight: bold; color: #ffae00; font-size: 1.5rem;">HẠNG ...</div>
                 </div>
                 <div id="rank-container"><div id="rank-badge" class="rank-badge">XẾP LOẠI</div></div>
             </div>
-            <div style="display:flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-                <button id="btn-view-review" class="btn btn-fire">GIẢI THÍCH CHI TIẾT 📖</button>
+            <div class="grid-2-col" style="margin-top: 20px;">
+                <button id="btn-view-review" class="btn btn-fire">XEM GIẢI THÍCH 📖</button>
                 <button class="btn btn-gray" onclick="location.reload()">LÀM ĐỀ KHÁC</button>
             </div>
             <div id="review-area" style="display:none; margin-top: 30px;">
@@ -262,64 +311,66 @@
 
         <!-- Màn hình Admin -->
         <section id="screen-admin" class="screen">
-            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <h2 class="fire-text" style="margin:0; font-size: 1.5rem;">📊 QUẢN LÝ KẾT QUẢ</h2>
-                <button id="btn-admin-close" class="btn btn-gray" style="padding: 5px 15px; font-size: 0.7rem;">THOÁT</button>
+                <button id="btn-admin-close" class="btn btn-gray" style="padding: 8px 15px; font-size: 0.8rem;">ĐÓNG ✖</button>
             </div>
             
-            <div class="card" style="padding: 15px; margin-bottom: 20px; background: #fffbeb; border: 2px solid #fcd34d;">
-                <h4 style="margin: 0 0 10px 0; color: #92400e;">⚙️ CÀI ĐẶT THỜI GIAN & GỢI Ý</h4>
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 120px;">
-                        <label style="font-size: 0.7rem; font-weight: bold;">LUYỆN TẬP (PHÚT):</label>
-                        <input type="number" id="cfg-time-practice" value="45" style="padding: 8px;">
+            <div class="card" style="padding: 20px; margin-bottom: 20px; background: #fffbeb; border: 2px solid #fcd34d;">
+                <h4 style="margin: 0 0 15px 0; color: #92400e; text-transform: uppercase;">⚙️ Cài đặt Thời gian & Gợi ý</h4>
+                <div class="admin-controls" style="background: transparent; padding: 0; margin: 0;">
+                    <div style="flex: 1; min-width: 100px;">
+                        <label style="font-size: 0.75rem; font-weight: bold;">LUYỆN TẬP (PHÚT):</label>
+                        <input type="number" id="cfg-time-practice" value="45" style="padding: 10px; margin-top:5px;">
                     </div>
-                    <div style="flex: 1; min-width: 120px;">
-                        <label style="font-size: 0.7rem; font-weight: bold;">KIỂM TRA (PHÚT):</label>
-                        <input type="number" id="cfg-time-test" value="45" style="padding: 8px;">
+                    <div style="flex: 1; min-width: 100px;">
+                        <label style="font-size: 0.75rem; font-weight: bold;">KIỂM TRA (PHÚT):</label>
+                        <input type="number" id="cfg-time-test" value="45" style="padding: 10px; margin-top:5px;">
                     </div>
-                    <div style="flex: 1; min-width: 120px;">
-                        <label style="font-size: 0.7rem; font-weight: bold;">SỐ GỢI Ý (LƯỢT):</label>
-                        <input type="number" id="cfg-max-hints" value="3" style="padding: 8px;">
+                    <div style="flex: 1; min-width: 100px;">
+                        <label style="font-size: 0.75rem; font-weight: bold;">SỐ GỢI Ý (LƯỢT):</label>
+                        <input type="number" id="cfg-max-hints" value="3" style="padding: 10px; margin-top:5px;">
                     </div>
-                    <button id="btn-save-config" class="btn btn-fire" style="padding: 10px 20px; font-size: 0.7rem; margin-top: 15px;">CẬP NHẬT CẤU HÌNH</button>
+                    <button id="btn-save-config" class="btn btn-fire" style="padding: 12px 20px; font-size: 0.8rem; width: 100%;">CẬP NHẬT CẤU HÌNH</button>
                 </div>
             </div>
 
             <div class="stats-summary" id="admin-stats" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;"></div>
             
             <div class="admin-controls">
-                <div style="flex:1; min-width: 130px;">
-                    <label style="font-size: 0.7rem; font-weight: bold;">SẮP XẾP:</label>
-                    <select id="admin-sort" style="width:100%; padding:8px; border-radius:5px;">
+                <div style="flex:1; min-width: 120px;">
+                    <label style="font-size: 0.75rem; font-weight: bold;">SẮP XẾP:</label>
+                    <select id="admin-sort" style="width:100%; padding:10px; margin-top:5px;">
                         <option value="score_desc">Điểm cao nhất</option>
                         <option value="date_new">Mới nhất</option>
                         <option value="duration_fast">Làm nhanh nhất</option>
                     </select>
                 </div>
-                <div style="flex:1; min-width: 130px;">
-                    <label style="font-size: 0.7rem; font-weight: bold;">TRƯỜNG:</label>
-                    <select id="admin-filter-school" style="width:100%; padding:8px; border-radius:5px;">
+                <div style="flex:1; min-width: 120px;">
+                    <label style="font-size: 0.75rem; font-weight: bold;">TRƯỜNG:</label>
+                    <select id="admin-filter-school" style="width:100%; padding:10px; margin-top:5px;">
                         <option value="all">Tất cả trường</option>
                     </select>
                 </div>
-                <div style="flex:1; min-width: 130px;">
-                    <label style="font-size: 0.7rem; font-weight: bold;">LỚP:</label>
-                    <select id="admin-filter-class" style="width:100%; padding:8px; border-radius:5px;">
+                <div style="flex:1; min-width: 120px;">
+                    <label style="font-size: 0.75rem; font-weight: bold;">LỚP:</label>
+                    <select id="admin-filter-class" style="width:100%; padding:10px; margin-top:5px;">
                         <option value="all">Tất cả lớp</option>
                     </select>
                 </div>
-                <div style="flex:1; min-width: 130px;">
-                    <label style="font-size: 0.7rem; font-weight: bold;">CHẾ ĐỘ:</label>
-                    <select id="admin-filter-mode" style="width:100%; padding:8px; border-radius:5px;">
+                <div style="flex:1; min-width: 120px;">
+                    <label style="font-size: 0.75rem; font-weight: bold;">CHẾ ĐỘ:</label>
+                    <select id="admin-filter-mode" style="width:100%; padding:10px; margin-top:5px;">
                         <option value="all">Tất cả</option>
                         <option value="test">Kiểm tra</option>
                         <option value="practice">Luyện tập</option>
                     </select>
                 </div>
-                <button id="btn-admin-refresh" class="btn" style="background:var(--secondary); color:white; font-size:0.8rem">LÀM MỚI 🔄</button>
-                <button id="btn-admin-inbox" class="btn" style="background:var(--danger); color:white; font-size:0.8rem">HỘP THƯ LỖI 📩</button>
-                <button id="btn-export-excel" class="btn" style="background:var(--success); color:white; font-size:0.8rem">XUẤT EXCEL 📗</button>
+                <div class="grid-2-col" style="width: 100%;">
+                    <button id="btn-admin-refresh" class="btn" style="background:var(--secondary); color:white; font-size:0.8rem; padding: 12px;">LÀM MỚI 🔄</button>
+                    <button id="btn-admin-inbox" class="btn" style="background:var(--danger); color:white; font-size:0.8rem; padding: 12px;">HỘP THƯ LỖI 📩</button>
+                    <button id="btn-export-excel" class="btn" style="background:var(--success); color:white; font-size:0.8rem; padding: 12px; grid-column: span 2;">XUẤT EXCEL 📗</button>
+                </div>
             </div>
             <div class="admin-table-container">
                 <table class="admin-table">
@@ -341,35 +392,35 @@
 </div> <!-- END APP WRAPPER -->
 
 <!-- Modal Đăng nhập Admin -->
-<div id="admin-auth-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:20000; display:none; justify-content:center; align-items:center;">
-    <div class="card" style="width:100%; max-width:400px; text-align:center;">
-        <h2 style="color: var(--primary)">Xác minh Quản trị</h2>
-        <input type="password" id="admin-pw" placeholder="Mật khẩu..." style="margin-bottom:20px;" oncopy="return false" oncut="return false" onpaste="return false">
-        <div style="display:flex; gap:10px;">
-            <button class="btn btn-gray" style="flex:1" id="btn-auth-cancel">HỦY</button>
-            <button class="btn btn-fire" style="flex:1" id="btn-auth-confirm">XÁC NHẬN</button>
+<div id="admin-auth-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:20000; display:none; justify-content:center; align-items:center; padding: 20px;">
+    <div class="card" style="width:100%; max-width:400px; text-align:center; padding: 30px 20px;">
+        <h2 style="color: var(--primary); margin-top:0;">Xác minh Quản trị</h2>
+        <input type="password" id="admin-pw" placeholder="Nhập mật khẩu..." style="margin-bottom:20px; text-align:center;" oncopy="return false" oncut="return false" onpaste="return false">
+        <div class="grid-2-col">
+            <button class="btn btn-gray" id="btn-auth-cancel">HỦY</button>
+            <button class="btn btn-fire" id="btn-auth-confirm">XÁC NHẬN</button>
         </div>
     </div>
 </div>
 
 <!-- Modal Xác nhận Xoá/Cấu hình/Hộp thư -->
-<div id="delete-auth-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:20001; display:none; justify-content:center; align-items:center;">
-    <div class="card" style="width:100%; max-width:400px; text-align:center; border: 4px solid var(--danger);">
-        <h2 id="auth-action-title" style="color: var(--danger)">Xác nhận Hành động</h2>
-        <p style="margin-bottom: 15px; color: #475569;">Vui lòng nhập mật khẩu cấp cao để tiếp tục:</p>
-        <input type="password" id="delete-pw" placeholder="Mật khẩu..." style="margin-bottom:20px; outline:none; border:2px solid var(--danger);">
-        <div style="display:flex; gap:10px;">
-            <button class="btn btn-gray" style="flex:1" id="btn-delete-cancel">HỦY</button>
-            <button class="btn btn-fire" style="flex:1; background: var(--danger);" id="btn-delete-confirm">XÁC NHẬN</button>
+<div id="delete-auth-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:20001; display:none; justify-content:center; align-items:center; padding: 20px;">
+    <div class="card" style="width:100%; max-width:400px; text-align:center; border: 4px solid var(--danger); padding: 30px 20px;">
+        <h2 id="auth-action-title" style="color: var(--danger); margin-top:0;">Xác nhận Hành động</h2>
+        <p style="margin-bottom: 15px; color: #475569; font-size:0.9rem;">Vui lòng nhập mật khẩu cấp cao để tiếp tục:</p>
+        <input type="password" id="delete-pw" placeholder="Mật khẩu cấp cao..." style="margin-bottom:20px; text-align:center; border:2px solid var(--danger);">
+        <div class="grid-2-col">
+            <button class="btn btn-gray" id="btn-delete-cancel">HỦY</button>
+            <button class="btn btn-fire" style="background: var(--danger);" id="btn-delete-confirm">XÁC NHẬN</button>
         </div>
     </div>
 </div>
 
 <!-- MODAL XEM CHI TIẾT BÀI LÀM TỪ ADMIN -->
-<div id="admin-review-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:20002; display:none; justify-content:center; align-items:flex-start; padding: 20px; overflow-y:auto;">
-    <div class="card" style="width:100%; max-width:800px; text-align:left; margin-top: 20px;">
+<div id="admin-review-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:20002; display:none; justify-content:center; align-items:flex-start; padding: 15px; overflow-y:auto;">
+    <div class="card" style="width:100%; max-width:800px; text-align:left; margin-top: 20px; padding: 20px 15px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;">
-            <h2 style="color: var(--primary); margin:0;">CHI TIẾT: <span id="ar-name" style="color: #ff4e00"></span></h2>
+            <h2 style="color: var(--primary); margin:0; font-size: 1.2rem;">CHI TIẾT: <span id="ar-name" style="color: #ff4e00"></span></h2>
             <button id="btn-ar-close" class="btn btn-gray" style="padding: 8px 15px; font-size:0.8rem;">ĐÓNG ✖</button>
         </div>
         <div id="ar-content" style="margin-bottom: 20px;"></div>
@@ -419,30 +470,54 @@ let wishTimeoutId = null;
 // BIẾN BÁO LỖI
 let reportImageBase64 = "";
 
+// -------------------------------------------------------------
+// TỐI ƯU HÓA AUTO SCALE: SCALE ĐỘNG (DYNAMIC SCALE) CHO DESKTOP
+// -------------------------------------------------------------
 function autoScaleApp() {
     const container = document.querySelector('.container');
     const wrapper = document.getElementById('app-wrapper');
     if (!container || !wrapper) return;
-    const baseHeight = 850; 
-    const currentHeight = window.innerHeight;
-    container.style.marginBottom = '0px';
 
-    if (currentHeight < baseHeight) {
-        const ratio = currentHeight / baseHeight;
-        container.style.transform = `scale(${ratio})`;
-        setTimeout(() => {
-            const realHeight = container.offsetHeight; 
-            wrapper.style.height = `${realHeight * ratio}px`;
-            wrapper.style.overflow = 'hidden'; 
-        }, 50);
-    } else {
-        container.style.transform = `scale(1)`;
+    // Nếu là thiết bị di động (chiều rộng <= 768px), tắt Scale để cuộn tự nhiên
+    if (window.innerWidth <= 768) {
+        container.style.transform = `none`;
         wrapper.style.height = 'auto';
         wrapper.style.overflow = 'visible';
+        container.style.marginBottom = '50px';
+        return; 
+    }
+
+    // --- BẮT ĐẦU THUẬT TOÁN DYNAMIC SCALE CHO DESKTOP ---
+    // 1. Reset lại trạng thái ban đầu để đo đạc chiều cao thật
+    container.style.transform = `none`;
+    wrapper.style.height = 'auto';
+    wrapper.style.overflow = 'visible';
+    container.style.marginBottom = '0px';
+
+    // Ép trình duyệt cập nhật DOM (Reflow) để lấy chiều cao chính xác
+    void container.offsetHeight; 
+
+    // 2. Lấy chiều cao thực tế của nội dung và chiều cao của cửa sổ
+    const naturalHeight = container.offsetHeight; 
+    const windowHeight = window.innerHeight;
+
+    // 3. Tính toán tỉ lệ và ép khung
+    if (naturalHeight > windowHeight) {
+        // Nếu nội dung dài hơn cửa sổ -> Thu nhỏ lại chính xác % phần dư để vừa khít 100%
+        const ratio = windowHeight / naturalHeight;
+        container.style.transform = `scale(${ratio})`;
+        wrapper.style.height = `${windowHeight}px`;
+        wrapper.style.overflow = 'hidden'; // Khóa thanh cuộn
+    } else {
+        // Nếu nội dung ngắn hơn hoặc bằng cửa sổ -> Không cần thu nhỏ (tỉ lệ 1)
+        container.style.transform = `scale(1)`;
+        wrapper.style.height = `${windowHeight}px`;
+        wrapper.style.overflow = 'hidden'; // Vẫn khóa thanh cuộn để fix cứng màn hình
     }
 }
 window.addEventListener('resize', autoScaleApp);
 autoScaleApp();
+// -------------------------------------------------------------
 
 document.addEventListener('copy', (e) => { e.preventDefault(); return false; });
 document.addEventListener('keydown', (e) => {
@@ -628,11 +703,19 @@ const initGame = (m) => {
     // Ẩn nút báo lỗi khi đang thi để tránh lỗi mất focus (blur)
     document.getElementById('btn-report-open').style.display = 'none';
     
+    // CẬP NHẬT THÔNG TIN LÊN HEADER
+    const displayName = (name && name !== "input") ? name : 'Thí sinh';
+    const displayCls = (cls && cls !== "input") ? ` | Lớp: ${cls}` : '';
+    const displaySbd = (sbd && sbd !== "input") ? ` | SBD: ${sbd}` : '';
+    const headerInfo = document.getElementById('header-user-info');
+    if (headerInfo) {
+        headerInfo.innerText = `${displayName}${displayCls}${displaySbd}`;
+    }
+    
     // Reset Gợi ý
     hintsUsed = 0;
     unlockedHints = [];
 
-    // THUẬT TOÁN ĐẨY TOÀN BỘ CÂU HỎI & XÁO TRỘN TUYỆT ĐỐI
     let qNum = 1;
     currentExam = [];
     shuffle([...QUESTION_BANK.mcq]).forEach(q => currentExam.push({...q, id: `q_${qNum}`, type: 'mcq', section: 'Phần I. Trắc nghiệm khách quan dạng Đa lựa chọn', displayNum: qNum++}));
@@ -665,7 +748,7 @@ function renderQuestion() {
     const q = currentExam[currentIdx];
     const container = document.getElementById('quiz-content');
     const labels = ['A', 'B', 'C', 'D'];
-    let html = `<div class="section-title">${q.section}</div><div class="card">`;
+    let html = `<div class="section-title">${q.section}</div><div class="card" style="margin-top: -10px;">`;
     
     let expHtml = q.e;
     if (q.type === 'mcq') expHtml = `Phương án <b>${q.a}</b> là đúng.<br><br>${q.e}`;
@@ -689,13 +772,13 @@ function renderQuestion() {
         if(q.img) html += `<img src="${q.img}" class="q-img" alt="Ảnh minh họa" onerror="this.style.display='none'">`;
         q.sts.forEach((st, si) => {
             let val = (userAnswers[q.id]||{})[si];
-            html += `<div class="tf-row"><span style="flex:1"><b>${st.l}</b> ${st.t}</span><div style="display:flex; gap:10px;"><button class="tf-btn ${val===true?'active-t':''}" data-si="${si}" data-val="true">Đúng</button><button class="tf-btn ${val===false?'active-f':''}" data-si="${si}" data-val="false">Sai</button></div></div>`;
+            html += `<div class="tf-row"><span><b>${st.l}</b> ${st.t}</span><div><button class="tf-btn ${val===true?'active-t':''}" data-si="${si}" data-val="true">Đúng</button><button class="tf-btn ${val===false?'active-f':''}" data-si="${si}" data-val="false">Sai</button></div></div>`;
         });
     } else {
         html += `<h3>Câu ${q.displayNum}. ${q.q}</h3>`;
         if(q.img) html += `<img src="${q.img}" class="q-img" alt="Ảnh minh họa" onerror="this.style.display='none'">`;
         const currentVal = (userAnswers[q.id] || "").padEnd(4, " ");
-        html += `<div class="short-answer-wrapper"><input type="text" class="char-slot" maxlength="1" value="${currentVal[0] !== ' ' ? currentVal[0] : ''}" data-idx="0"><input type="text" class="char-slot" maxlength="1" value="${currentVal[1] !== ' ' ? currentVal[1] : ''}" data-idx="1"><input type="text" class="char-slot" maxlength="1" value="${currentVal[2] !== ' ' ? currentVal[2] : ''}" data-idx="2"><input type="text" class="char-slot" maxlength="1" value="${currentVal[3] !== ' ' ? currentVal[3] : ''}" data-idx="3"></div><p style="color:var(--danger); font-size:0.75rem; font-weight:bold; text-align:center;">Lưu ý: Nhập mỗi ký tự vào một ô</p>`;
+        html += `<div class="short-answer-wrapper"><input type="text" class="char-slot" maxlength="1" value="${currentVal[0] !== ' ' ? currentVal[0] : ''}" data-idx="0"><input type="text" class="char-slot" maxlength="1" value="${currentVal[1] !== ' ' ? currentVal[1] : ''}" data-idx="1"><input type="text" class="char-slot" maxlength="1" value="${currentVal[2] !== ' ' ? currentVal[2] : ''}" data-idx="2"><input type="text" class="char-slot" maxlength="1" value="${currentVal[3] !== ' ' ? currentVal[3] : ''}" data-idx="3"></div><p style="color:var(--danger); font-size:0.8rem; font-weight:bold; text-align:center;">Lưu ý: Nhập mỗi ký tự vào một ô</p>`;
     }
     container.innerHTML = html + `</div>`;
     
@@ -822,11 +905,10 @@ async function renderAdmin() {
         data.forEach(i => { if(i.score >= 9) s.xs++; else if(i.score >= 8) s.g++; else if(i.score >= 6.5) s.k++; else if(i.score >= 5) s.d++; else s.cd++; });
         statsBox.innerHTML = `<div class="stat-box"><b>${s.xs}</b><br><small>X.Sắc</small></div><div class="stat-box"><b>${s.g}</b><br><small>Giỏi</small></div><div class="stat-box"><b>${s.k}</b><br><small>Khá</small></div><div class="stat-box"><b>${s.d}</b><br><small>Đạt</small></div><div class="stat-box" style="border-color:red"><b>${s.cd}</b><br><small>C.Đạt</small></div>`;
         
-        // THÊM NÚT XEM (👁️) VÀO BẢNG QUẢN TRỊ
-        listBody.innerHTML = data.map((i, idx) => `<tr><td>${idx+1}</td><td>${i.sbd}</td><td>${i.name}</td><td>${i.class}</td><td>${i.school||'-'}</td><td><span class="badge-mode ${i.mode === 'practice' ? 'badge-practice' : 'badge-test'}">${i.mode === 'practice' ? 'Luyện tập' : 'Kiểm tra'}</span></td><td><b>${(i.score||0).toFixed(1)}</b></td><td>${i.duration}s</td><td>${new Date(i.timestamp).toLocaleDateString()}</td><td style="display:flex; gap:5px;"><button style="background:var(--secondary); color:white; border:none; padding:3px 8px; border-radius:4px; cursor:pointer" class="btn-view" data-id="${i.id}">👁️</button><button style="background:red; color:white; border:none; padding:3px 8px; border-radius:4px; cursor:pointer" class="btn-del" data-id="${i.id}">X</button></td></tr>`).join('');
+        listBody.innerHTML = data.map((i, idx) => `<tr><td>${idx+1}</td><td>${i.sbd}</td><td>${i.name}</td><td>${i.class}</td><td>${i.school||'-'}</td><td><span class="badge-mode ${i.mode === 'practice' ? 'badge-practice' : 'badge-test'}">${i.mode === 'practice' ? 'Luyện tập' : 'Kiểm tra'}</span></td><td><b>${(i.score||0).toFixed(1)}</b></td><td>${i.duration}s</td><td>${new Date(i.timestamp).toLocaleDateString()}</td><td style="display:flex; gap:5px;"><button style="background:var(--secondary); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer" class="btn-view" data-id="${i.id}">👁️</button><button style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer" class="btn-del" data-id="${i.id}">X</button></td></tr>`).join('');
         
         listBody.querySelectorAll('.btn-del').forEach(b => b.onclick = () => deleteEntry(b.dataset.id));
-        listBody.querySelectorAll('.btn-view').forEach(b => b.onclick = () => viewAdminReview(b.dataset.id)); // Sự kiện gọi Modal Xem chi tiết
+        listBody.querySelectorAll('.btn-view').forEach(b => b.onclick = () => viewAdminReview(b.dataset.id));
         
         window.currentFilteredData = data; setTimeout(autoScaleApp, 50);
     } catch(e) { listBody.innerHTML = "<tr><td colspan='10'>Lỗi kết nối Firebase.</td></tr>"; }
@@ -853,7 +935,7 @@ function viewAdminReview(docId) {
         else if(q.type === 'tf') { let cp = 0; q.sts.forEach((st, si) => { if((arUserAnswers[q.id]||{})[si] === st.a) cp++; }); itemScore = tfMapReview[cp] || 0; scoreHTML = `<span class="score-badge ${itemScore > 0 ? 'score-plus' : 'score-zero'}">Đúng ${cp}/4 ý (${itemScore > 0 ? '+'+itemScore : '0'}đ)</span>`; }
         
         h += `<div style="border-left: 5px solid ${itemScore > 0 ? 'var(--success)' : 'var(--danger)'}; padding-left: 15px; margin-bottom: 25px;"><h4>${qText} ${scoreHTML}</h4>`;
-        if(q.img) h += `<img src="${q.img}" style="max-width:200px; display:block; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px;">`; 
+        if(q.img) h += `<img src="${q.img}" style="max-width:100%; object-fit: contain; display:block; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px;">`; 
         
         if(q.type === 'mcq') {
             (q.shuffledOptions || q.o).forEach((o, idx) => {
@@ -900,11 +982,9 @@ document.getElementById('btn-ar-retry').onclick = () => {
 
     if (wrongQuestions.length === 0) { alert("Tuyệt vời! Học sinh này đã làm đúng toàn bộ 100%."); return; }
 
-    // Chuyển thẳng về màn hình làm bài với bộ đề sai
     document.getElementById('admin-review-modal').style.display = 'none';
     document.getElementById('screen-admin').classList.remove('active');
     
-    // Hiện nút báo lỗi vì đang luyện tập
     document.getElementById('btn-report-open').style.display = 'block';
 
     currentExam = wrongQuestions;
@@ -913,7 +993,7 @@ document.getElementById('btn-ar-retry').onclick = () => {
 
     document.getElementById('main-header').style.display = 'flex';
     showScreen('screen-quiz'); renderQuestion(); startTimer();
-    alert(`Đã khởi tạo đề thi với ${wrongQuestions.length} câu làm sai. Bắt đầu làm bài!`);
+    showCustomAlert(`Đã khởi tạo đề thi với ${wrongQuestions.length} câu làm sai.`);
 };
 
 let pendingAuthAction = null; let currentDeleteId = null;
@@ -937,7 +1017,7 @@ document.getElementById('btn-delete-confirm').onclick = async () => {
             const mHints = parseInt(document.getElementById('cfg-max-hints').value);
             
             if(isNaN(pTime) || isNaN(tTime) || isNaN(mHints) || pTime <= 0 || tTime <= 0 || mHints < 0) { 
-                showCustomAlert("⚠️ Sai mật khẩu xóa!"); return; 
+                showCustomAlert("⚠️ Vui lòng nhập số hợp lệ!"); return; 
             }
             try { 
                 await setDoc(doc(db, 'artifacts', appId_fixed, 'public', 'data', 'config', 'timer_settings'), { 
@@ -1055,7 +1135,6 @@ document.getElementById('btn-report-submit').onclick = async () => {
     btn.innerText = "GỬI PHẢN HỒI"; btn.disabled = false;
 };
 
-
 // XỬ LÝ HỘP THƯ LỖI (ADMIN)
 async function renderAdminInbox() {
     document.getElementById('admin-inbox-modal').style.display = 'flex';
@@ -1077,8 +1156,8 @@ async function renderAdminInbox() {
                 <td><b>${r.name}</b></td>
                 <td>${r.question || '-'}</td>
                 <td>${r.detail || '-'}</td>
-                <td>${r.image ? `<button class="btn btn-gray btn-view-img" data-img="${r.image}" style="padding:4px 8px; font-size:0.7rem;">Xem ảnh 🖼️</button>` : '-'}</td>
-                <td><button class="btn-del-report" data-id="${r.id}" style="background:var(--danger); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Đã sửa / Xóa</button></td>
+                <td>${r.image ? `<button class="btn btn-gray btn-view-img" data-img="${r.image}" style="padding:4px 8px; font-size:0.75rem;">Xem ảnh 🖼️</button>` : '-'}</td>
+                <td><button class="btn-del-report" data-id="${r.id}" style="background:var(--danger); color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size: 0.8rem;">Đã xem / Xóa</button></td>
             </tr>
         `).join('');
 
@@ -1132,7 +1211,7 @@ document.getElementById('btn-view-review').onclick = () => {
             h += `<div style="background:#f1f5f9; padding:15px; border-radius:12px; margin-bottom:15px; font-style:italic;">${q.ctx}</div>`;
             q.sts.forEach((st, si) => {
                 let uV = (userAnswers[q.id]||{})[si], isC = (uV === st.a);
-                h += `<div class="tf-row" style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f1f5f9;"><span>${st.l} ${st.t}</span><div style="font-size:0.8rem; text-align:right;"><span style="color:${isC?'#10b981':'#ef4444'}">Bạn: <b>${uV===true?'Đúng':(uV===false?'Sai':'?')}</b></span><br><span>Đáp án: <b>${st.a?'Đúng':'Sai'}</b> ${isC?'✓':'✗'}</span></div></div>`;
+                h += `<div class="tf-row" style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f1f5f9;"><span>${st.l} ${st.t}</span><div style="font-size:0.8rem; text-align:right; width: max-content;"><span style="color:${isC?'#10b981':'#ef4444'}">Bạn: <b>${uV===true?'Đúng':(uV===false?'Sai':'?')}</b></span><br><span>Đáp án: <b>${st.a?'Đúng':'Sai'}</b> ${isC?'✓':'✗'}</span></div></div>`;
             });
         } else {
             const isC = norm(userAnswers[q.id]||'') === norm(q.a);
@@ -1170,31 +1249,22 @@ const triggerCheat = () => {
     } 
 };
 
-// 1. Chuyển tab hoặc ẩn cửa sổ
 document.addEventListener('visibilitychange', () => { 
-    if(canCheckCheat && isQuizRunning && mode === 'test' && document.visibilityState === 'hidden') { 
-        triggerCheat(); 
-    } 
+    if(canCheckCheat && isQuizRunning && mode === 'test' && document.visibilityState === 'hidden') { triggerCheat(); } 
 });
 
-// 2. Mất tiêu điểm (Mở cửa sổ nổi, bấm sang màn hình khác)
 window.addEventListener('blur', () => { 
     setTimeout(() => { 
-        if (canCheckCheat && isQuizRunning && mode === 'test' && !document.hasFocus()) { 
-            triggerCheat(); 
-        } 
-    }, 200); // Rút ngắn thời gian bắt để nhạy hơn
+        if (canCheckCheat && isQuizRunning && mode === 'test' && !document.hasFocus()) { triggerCheat(); } 
+    }, 200); 
 });
 
-// 3. Thay đổi kích thước (Chia đôi màn hình)
 window.addEventListener('resize', () => {
     if (canCheckCheat && isQuizRunning && mode === 'test') {
         const currentWidth = window.innerWidth;
         const initialWidth = window.testInitialWidth || currentWidth;
-        // Nếu chiều ngang bị thu hẹp đáng kể (ví dụ > 150px) do kéo chia đôi màn hình
-        if (Math.abs(currentWidth - initialWidth) > 150) {
-            triggerCheat();
-        }
+        // Nếu thu hẹp ngang quá 150px (chia đôi màn hình)
+        if (Math.abs(currentWidth - initialWidth) > 150) { triggerCheat(); }
     }
 });
 
