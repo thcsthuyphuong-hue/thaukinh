@@ -292,7 +292,7 @@
         <section id="screen-result" class="screen">
             <div class="card" style="background: linear-gradient(135deg, #1e40af, #1e1b4b); color: white; text-align: center; padding: 40px 20px;">
                 <h2 id="res-name" class="fire-text" style="font-size: 1.8rem; margin-bottom: 10px;">HỌC SINH</h2>
-                <div id="res-meta" style="opacity: 0.9;">Thông margin</div>
+                <div id="res-meta" style="opacity: 0.9;">Thông tin</div>
                 <div style="margin: 25px 0;">
                     <div id="final-score" style="font-size: 6rem; font-weight: 900; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.5);">0.0</div>
                     <div id="my-rank-text" style="margin-top: 10px; font-weight: bold; color: #ffae00; font-size: 1.5rem;">HẠNG ...</div>
@@ -529,10 +529,20 @@ document.addEventListener('keydown', (e) => {
     }
 }, true);
 
-signInAnonymously(auth).catch(e => console.error(e));
+const initAuth = async () => {
+    try {
+        await signInAnonymously(auth);
+    } catch (e) {
+        console.error("Lỗi xác thực:", e);
+    }
+};
+initAuth();
+
 onAuthStateChanged(auth, async user => {
     currentUser = user;
-    if(user) loadTimeConfig();
+    if(user) {
+        await loadTimeConfig();
+    }
 });
 
 const QUESTION_BANK = {
@@ -703,8 +713,9 @@ const initGame = (m) => {
 
     mode = m; isQuizRunning = true; canCheckCheat = false; isProcessingCheat = false;
     
-    // Ẩn nút báo lỗi khi đang thi để tránh lỗi mất focus (blur)
+    // Ẩn nút báo lỗi và nút quản trị khi đang thi để tránh lỗi mất focus (blur) và sửa cấu hình ngang
     document.getElementById('btn-report-open').style.display = 'none';
+    document.getElementById('btn-admin-open').style.display = 'none';
     
     // CẬP NHẬT THÔNG TIN LÊN HEADER
     const displayName = (name && name !== "input") ? name : 'Thí sinh';
@@ -721,12 +732,22 @@ const initGame = (m) => {
 
     let qNum = 1;
     currentExam = [];
-    shuffle([...QUESTION_BANK.mcq]).forEach(q => currentExam.push({...q, id: `q_${qNum}`, type: 'mcq', section: 'Phần I. Trắc nghiệm khách quan dạng Đa lựa chọn', displayNum: qNum++}));
-    shuffle([...QUESTION_BANK.tf]).forEach(q => currentExam.push({...q, id: `q_${qNum}`, type: 'tf', section: 'Phần II. Trắc nghiệm khách quan dạng Đúng/Sai', displayNum: qNum++}));
-    shuffle([...QUESTION_BANK.short]).forEach(q => currentExam.push({...q, id: `q_${qNum}`, type: 'short', section: 'Phần III. Trắc nghiệm khách quan dạng Trả lời ngắn', displayNum: qNum++}));
+    
+    // CẤU TRÚC ĐỀ 20 CÂU: 12 Đa Lựa Chọn - 4 Đúng/Sai - 4 Trả Lời Ngắn
+    shuffle([...QUESTION_BANK.mcq]).slice(0, 12).forEach(q => currentExam.push({...q, id: `q_${qNum}`, type: 'mcq', section: 'Phần I. Trắc nghiệm khách quan dạng Đa lựa chọn', displayNum: qNum++}));
+    shuffle([...QUESTION_BANK.tf]).slice(0, 4).forEach(q => currentExam.push({...q, id: `q_${qNum}`, type: 'tf', section: 'Phần II. Trắc nghiệm khách quan dạng Đúng/Sai', displayNum: qNum++}));
+    shuffle([...QUESTION_BANK.short]).slice(0, 4).forEach(q => currentExam.push({...q, id: `q_${qNum}`, type: 'short', section: 'Phần III. Trắc nghiệm khách quan dạng Trả lời ngắn', displayNum: qNum++}));
 
     userAnswers = {}; currentIdx = 0; 
     timeLeft = (mode === 'test') ? testTimeLimit : practiceTimeLimit;
+    
+    // CẬP NHẬT NGAY THỜI GIAN LÊN ĐỒNG HỒ TRÁNH TRỄ HIỂN THỊ
+    const elTimer = document.getElementById('timer');
+    if(elTimer) {
+        const tm = Math.floor(timeLeft/60), ts = timeLeft%60;
+        elTimer.innerText = `${tm}:${ts.toString().padStart(2,'0')}`;
+    }
+    
     quizStartTime = Date.now();
     
     document.getElementById('wish-overlay').style.display = 'flex';
@@ -781,7 +802,7 @@ function renderQuestion() {
         html += `<h3>Câu ${q.displayNum}. ${q.q}</h3>`;
         if(q.img) html += `<img src="${q.img}" class="q-img" alt="Ảnh minh họa" onerror="this.style.display='none'">`;
         const currentVal = (userAnswers[q.id] || "").padEnd(4, " ");
-        html += `<div class="short-answer-wrapper"><input type="text" class="char-slot" maxlength="1" value="${currentVal[0] !== ' ' ? currentVal[0] : ''}" data-idx="0"><input type="text" class="char-slot" maxlength="1" value="${currentVal[1] !== ' ' ? currentVal[1] : ''}" data-idx="1"><input type="text" class="char-slot" maxlength="1" value="${currentVal[2] !== ' ' ? currentVal[2] : ''}" data-idx="2"><input type="text" class="char-slot" maxlength="1" value="${currentVal[3] !== ' ' ? currentVal[3] : ''}" data-idx="3"></div><p style="color:var(--danger); font-size:0.8rem; font-weight:bold; text-align:center;">Lưu ý: Nhập mỗi ký tự vào một ô từ trái sang phải,kể cả dấu âm hay dấu phẩy! </p>`;
+        html += `<div class="short-answer-wrapper"><input type="text" class="char-slot" maxlength="1" value="${currentVal[0] !== ' ' ? currentVal[0] : ''}" data-idx="0"><input type="text" class="char-slot" maxlength="1" value="${currentVal[1] !== ' ' ? currentVal[1] : ''}" data-idx="1"><input type="text" class="char-slot" maxlength="1" value="${currentVal[2] !== ' ' ? currentVal[2] : ''}" data-idx="2"><input type="text" class="char-slot" maxlength="1" value="${currentVal[3] !== ' ' ? currentVal[3] : ''}" data-idx="3"></div><p style="color:var(--danger); font-size:0.8rem; font-weight:bold; text-align:center;">Lưu ý: Nhập mỗi ký tự vào một ô</p>`;
     }
     container.innerHTML = html + `</div>`;
     
@@ -839,30 +860,33 @@ async function calculateResult() {
     if(wishTimeoutId) clearTimeout(wishTimeoutId);
     isQuizRunning = false; canCheckCheat = false; clearInterval(timerInt); audioFinish.play().catch(()=>{});
     
-    // Hiện lại nút Báo lỗi
+    // Hiện lại nút Báo lỗi và Quản trị
     document.getElementById('btn-report-open').style.display = 'block';
+    document.getElementById('btn-admin-open').style.display = 'block';
 
     const dur = Math.floor((Date.now() - quizStartTime) / 1000);
-    let score = 0; const tfMap = {0:0, 1:0.05, 2:0.125, 3:0.25, 4:0.5};
+    let score = 0; 
+    // THANG ĐIỂM CHUẨN ĐỊNH DẠNG MỚI (TỔNG 7 ĐIỂM)
+    const tfMap = {0:0, 1:0.1, 2:0.25, 3:0.35, 4:0.5}; // 4 câu = 2.0 điểm
     currentExam.forEach(q => {
         const norm = (s) => (s || "").toString().trim().replace(',','.');
-        if(q.type === 'mcq' && norm(userAnswers[q.id]||'') === norm(q.a)) score += 0.25;
+        if(q.type === 'mcq' && norm(userAnswers[q.id]||'') === norm(q.a)) score += 0.25; // 12 câu = 3.0 điểm
         else if(q.type === 'tf') { let cp = 0, u = userAnswers[q.id] || {}; q.sts.forEach((st, si) => { if(u[si] === st.a) cp++; }); score += tfMap[cp] || 0; }
-        else if(q.type === 'short' && norm(userAnswers[q.id]||'') === norm(q.a)) score += 0.5;
+        else if(q.type === 'short' && norm(userAnswers[q.id]||'') === norm(q.a)) score += 0.5; // 4 câu = 2.0 điểm
     });
-    const fs = parseFloat(Math.min(10, score).toFixed(1)); // Max 10 điểm
+    const fs = Number(Math.min(7, score).toFixed(2)); // Max 7 điểm
     
     document.getElementById('wish-overlay').style.display = 'none'; cancelAnimationFrame(fireRequest);
     showScreen('screen-result'); document.getElementById('main-header').style.display = 'none';
-    document.getElementById('final-score').innerText = fs.toFixed(1);
+    document.getElementById('final-score').innerText = fs;
     const u = window.finalUserData;
     document.getElementById('res-name').innerText = (u.name || "input").toUpperCase();
     document.getElementById('res-meta').innerText = `${u.sch || "input"} | Lớp ${u.cls || "input"} | SBD ${u.sbd || "input"}`;
     
     let rb = document.getElementById('rank-badge'), txt = 'CHƯA ĐẠT', col = '#64748b';
-    if(fs >= 9.0) { txt='XUẤT SẮC'; col='#f59e0b'; } else if(fs >= 8.0) { txt='GIỎI'; col='#10b981'; } else if(fs >= 6.5) { txt='KHÁ'; col='#3b82f6'; } else if(fs >= 5.0) { txt='ĐẠT'; col='#8b5cf6'; }
+    if(fs >= 6.3) { txt='XUẤT SẮC'; col='#f59e0b'; } else if(fs >= 5.6) { txt='GIỎI'; col='#10b981'; } else if(fs >= 4.5) { txt='KHÁ'; col='#3b82f6'; } else if(fs >= 3.5) { txt='ĐẠT'; col='#8b5cf6'; }
     rb.innerText = txt; rb.style.background = col;
-    if(fs >= 5.0) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    if(fs >= 3.5) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
 
     if(currentUser) {
         try { 
@@ -905,10 +929,10 @@ async function renderAdmin() {
         data.sort((a,b) => { if(sVal === 'score_desc') return b.score - a.score || a.duration - b.duration; if(sVal === 'date_new') return new Date(b.timestamp) - new Date(a.timestamp); if(sVal === 'duration_fast') return a.duration - b.duration || b.score - a.score; return 0; });
         
         let s = { xs: 0, g: 0, k: 0, d: 0, cd: 0 };
-        data.forEach(i => { if(i.score >= 9) s.xs++; else if(i.score >= 8) s.g++; else if(i.score >= 6.5) s.k++; else if(i.score >= 5) s.d++; else s.cd++; });
+        data.forEach(i => { if(i.score >= 6.3) s.xs++; else if(i.score >= 5.6) s.g++; else if(i.score >= 4.5) s.k++; else if(i.score >= 3.5) s.d++; else s.cd++; });
         statsBox.innerHTML = `<div class="stat-box"><b>${s.xs}</b><br><small>X.Sắc</small></div><div class="stat-box"><b>${s.g}</b><br><small>Giỏi</small></div><div class="stat-box"><b>${s.k}</b><br><small>Khá</small></div><div class="stat-box"><b>${s.d}</b><br><small>Đạt</small></div><div class="stat-box" style="border-color:red"><b>${s.cd}</b><br><small>C.Đạt</small></div>`;
         
-        listBody.innerHTML = data.map((i, idx) => `<tr><td>${idx+1}</td><td>${i.sbd}</td><td>${i.name}</td><td>${i.class}</td><td>${i.school||'-'}</td><td><span class="badge-mode ${i.mode === 'practice' ? 'badge-practice' : 'badge-test'}">${i.mode === 'practice' ? 'Luyện tập' : 'Kiểm tra'}</span></td><td><b>${(i.score||0).toFixed(1)}</b></td><td>${i.duration}s</td><td>${new Date(i.timestamp).toLocaleDateString()}</td><td style="display:flex; gap:5px;"><button style="background:var(--secondary); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer" class="btn-view" data-id="${i.id}">👁️</button><button style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer" class="btn-del" data-id="${i.id}">X</button></td></tr>`).join('');
+        listBody.innerHTML = data.map((i, idx) => `<tr><td>${idx+1}</td><td>${i.sbd}</td><td>${i.name}</td><td>${i.class}</td><td>${i.school||'-'}</td><td><span class="badge-mode ${i.mode === 'practice' ? 'badge-practice' : 'badge-test'}">${i.mode === 'practice' ? 'Luyện tập' : 'Kiểm tra'}</span></td><td><b>${Number((i.score||0).toFixed(2))}</b></td><td>${i.duration}s</td><td>${new Date(i.timestamp).toLocaleDateString()}</td><td style="display:flex; gap:5px;"><button style="background:var(--secondary); color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer" class="btn-view" data-id="${i.id}">👁️</button><button style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer" class="btn-del" data-id="${i.id}">X</button></td></tr>`).join('');
         
         listBody.querySelectorAll('.btn-del').forEach(b => b.onclick = () => deleteEntry(b.dataset.id));
         listBody.querySelectorAll('.btn-view').forEach(b => b.onclick = () => viewAdminReview(b.dataset.id));
@@ -928,7 +952,7 @@ function viewAdminReview(docId) {
     const content = document.getElementById('ar-content');
     let h = '', labels = ['A', 'B', 'C', 'D'];
     const norm = (s) => (s || "").toString().trim().replace(',','.');
-    const tfMapReview = {0:0, 1:0.05, 2:0.125, 3:0.25, 4:0.5};
+    const tfMapReview = {0:0, 1:0.1, 2:0.25, 3:0.35, 4:0.5};
     
     arExamData.forEach(q => {
         let qText = q.type === 'tf' ? `Câu ${q.displayNum} (Đúng/Sai)` : `Câu ${q.displayNum}. ${q.q}`;
@@ -988,11 +1012,22 @@ document.getElementById('btn-ar-retry').onclick = () => {
     document.getElementById('admin-review-modal').style.display = 'none';
     document.getElementById('screen-admin').classList.remove('active');
     
-    document.getElementById('btn-report-open').style.display = 'block';
+    // Ẩn nút báo lỗi và nút quản trị khi đang làm lại bài
+    document.getElementById('btn-report-open').style.display = 'none';
+    document.getElementById('btn-admin-open').style.display = 'none';
 
     currentExam = wrongQuestions;
     userAnswers = {}; currentIdx = 0; mode = 'practice'; // Cho làm lại ở chế độ Luyện tập để xem được gợi ý
-    isQuizRunning = true; timeLeft = practiceTimeLimit; quizStartTime = Date.now();
+    isQuizRunning = true; timeLeft = practiceTimeLimit; 
+    
+    // Cập nhật đồng hồ tức thời
+    const elTimer = document.getElementById('timer');
+    if(elTimer) {
+        const tm = Math.floor(timeLeft/60), ts = timeLeft%60;
+        elTimer.innerText = `${tm}:${ts.toString().padStart(2,'0')}`;
+    }
+    
+    quizStartTime = Date.now();
 
     document.getElementById('main-header').style.display = 'flex';
     showScreen('screen-quiz'); renderQuestion(); startTimer();
@@ -1193,7 +1228,7 @@ document.getElementById('btn-view-review').onclick = () => {
     const area = document.getElementById('review-area'), content = document.getElementById('review-content'), labels = ['A', 'B', 'C', 'D'];
     area.style.display = 'block'; let h = '';
     const norm = (s) => (s || "").toString().trim().replace(',','.');
-    const tfMapReview = {0:0, 1:0.05, 2:0.125, 3:0.25, 4:0.5};
+    const tfMapReview = {0:0, 1:0.1, 2:0.25, 3:0.35, 4:0.5};
     currentExam.forEach(q => {
         let qText = q.type === 'tf' ? `Câu ${q.displayNum} (Đúng/Sai)` : `Câu ${q.displayNum}. ${q.q}`;
         let itemScore = 0, scoreHTML = '';
@@ -1233,7 +1268,7 @@ document.getElementById('btn-view-review').onclick = () => {
 document.getElementById('btn-export-excel').onclick = () => {
     const dataToExport = window.currentFilteredData || [];
     if (dataToExport.length === 0) { showCustomAlert("Không có dữ liệu để xuất!"); return; }
-    const excelRows = dataToExport.map((item, index) => ({ "STT": index + 1, "Họ và Tên": item.name || "input", "Số báo danh": item.sbd || "input", "Lớp": item.class || "input", "Trường": item.school || "input", "Chế độ làm": item.mode === 'practice' ? "Luyện tập" : "Kiểm tra", "Điểm số": parseFloat(item.score || 0).toFixed(1), "Thời gian làm (giây)": item.duration || 0, "Ngày nộp bài": new Date(item.timestamp).toLocaleString('vi-VN') }));
+    const excelRows = dataToExport.map((item, index) => ({ "STT": index + 1, "Họ và Tên": item.name || "input", "Số báo danh": item.sbd || "input", "Lớp": item.class || "input", "Trường": item.school || "input", "Chế độ làm": item.mode === 'practice' ? "Luyện tập" : "Kiểm tra", "Điểm số": Number((item.score || 0).toFixed(2)), "Thời gian làm (giây)": item.duration || 0, "Ngày nộp bài": new Date(item.timestamp).toLocaleString('vi-VN') }));
     const ws = XLSX.utils.json_to_sheet(excelRows); ws['!cols'] = [{wch: 5}, {wch: 25}, {wch: 12}, {wch: 10}, {wch: 25}, {wch: 15}, {wch: 10}, {wch: 18}, {wch: 25}];
     const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Báo cáo học tập"); XLSX.writeFile(wb, `KetQua_Vly9_${new Date().getTime()}.xlsx`);
 };
